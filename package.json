@@ -1,0 +1,19 @@
+{
+  "name": "xassert",
+  "version": "0.1.0",
+  "description": "xassert is just another assertion library",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "npm run lint && npm test",
+    "test": "node test.js",
+    "lint": "eslint .",
+    "watch:test": "watch 'npm run test'"
+  },
+  "author": "Víctor Herraiz Posada <victor.herraiz@gmail.com> (https://github.com/victorherraiz)",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^4.1.1",
+    "watch": "^1.0.2"
+  },
+  "false": {}
+}
