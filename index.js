@@ -71,8 +71,7 @@ class Assertion {
     return this
   }
 
-  isEqualToAnyOf () {
-    const expected = Array.from(arguments)
+  isEqualToAnyOf (expected) {
     if (expected.every(arg => arg !== this.value)) fire(this, 'actual value is different than any expected value')
     return this
   }
@@ -82,8 +81,7 @@ class Assertion {
     return this
   }
 
-  isNotEqualToAnyOf () {
-    const expected = Array.from(arguments)
+  isNotEqualToAnyOf (expected) {
     if (expected.some(arg => arg === this.value)) fire(this, 'actual value is equal to some expected value')
     return this
   }
@@ -93,16 +91,14 @@ class Assertion {
     return this
   }
 
-  isDeeplyEqualToAnyOf () {
-    const expected = Array.from(arguments)
+  isDeeplyEqualToAnyOf (expected) {
     if (expected.every(arg => !isDeeplyEqualTo(this.value, arg))) {
       fire(this, 'actual value is different than any of expected')
     }
     return this
   }
 
-  isNotDeeplyEqualToAnyOf () {
-    const expected = Array.from(arguments)
+  isNotDeeplyEqualToAnyOf (expected) {
     if (expected.some(arg => isDeeplyEqualTo(this.value, arg))) {
       fire(this, 'actual value is equal one of non expected values')
     }
@@ -181,6 +177,23 @@ class Assertion {
     return this
   }
 
+  every (cb) {
+    if (typeof cb !== 'function') throw new Error('it requires function as first parameter')
+    this.value.forEach(it => cb(new Assertion(it)))
+    return this
+  }
+
+  some (cb) {
+    if (typeof cb !== 'function') throw new Error('it requires function as first parameter')
+    const result = this.value.some(it => {
+      try { cb(new Assertion(it)) } 
+      catch (e) { return false }
+      return true
+    })
+    if (!result) fire ('None passes')
+    return this
+  }
+
   // ############ PROPERTIES ##############
 
   hasProperty (name, cb) {
@@ -195,8 +208,7 @@ class Assertion {
   }
 
   hasOwnProperty (name, cb) {
-    if (!(this.value instanceof Object &&
-            this.value.hasOwnProperty(name))) {
+    if (!(this.value instanceof Object && this.value.hasOwnProperty(name))) {
       fire(this, 'missing own property ' + name + ' in value')
     }
     if (typeof cb === 'function') cb(new Assertion(this.value[name]))
@@ -221,20 +233,14 @@ class Assertion {
 
   isFulfilled (cb) {
     return this.value.then(
-      value => typeof cb === 'function'
-        ? cb(new Assertion(value))
-        : value,
-      ex => {
-        fire(this, 'No rejection expected', 'Resolved promise', ex)
-      }
+      value => typeof cb === 'function' ? cb(new Assertion(value)) : value,
+      ex => fire(this, 'No rejection expected', 'Resolved promise', ex)
     )
   }
 
   isRejected (cb) {
     return this.value.then(
-      value => {
-        fire(this, 'Rejection expected but resolved with value: ' + value)
-      },
+      value => fire(this, 'Rejection expected but resolved with value: ' + value),
       ex => typeof cb === 'function' ? cb(new Assertion(ex)) : ex
     )
   }
@@ -285,12 +291,9 @@ class Assertion {
 
   throws (test) {
     const cb = this.value
-    if (typeof cb !== 'function') {
-      throw new Error('actual value mush be a function')
-    }
-    try {
-      this.value()
-    } catch (error) {
+    if (typeof cb !== 'function') throw new Error('actual value mush be a function')
+    try { this.value() }
+    catch (error) {
       if (test) {
         if (typeof test !== 'function') {
           throw new Error('first parameters should be a function')
@@ -317,7 +320,5 @@ function assert (object) {
 
 assert.Error = AssertionError
 assert.Assertion = Assertion
-assert.isEqualTo = (expected) => (it) => it.isEqualTo(expected)
-assert.isInstanceOf = (expected) => (it) => it.isInstanceOf(expected)
 
 module.exports = assert

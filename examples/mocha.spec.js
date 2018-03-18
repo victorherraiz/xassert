@@ -9,6 +9,6 @@ describe('Mocha Examples', function () {
     assert(3).isNotEqualTo(4)
     assert([3, 4]).isDeeplyEqualTo([3, 4])
     assert(null).isNull()
-    assert(7).isEqualToAnyOf(8, 9)
+    assert(7).isEqualToAnyOf(4, 7)
   })
 })

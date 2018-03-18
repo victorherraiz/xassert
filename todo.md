@@ -1,6 +1,7 @@
 # ToDo
 
 * New methods
+  * is alias of deepEquals
   * isAbove
   * isFulfilledWith
   * isNotDeepEqual
@@ -12,3 +13,4 @@
 * separate class for promises
 * Add Wrapper
 * review all texts
+* Add a message or a message generator to all assertions
