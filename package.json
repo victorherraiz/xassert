@@ -11,7 +11,8 @@
     "lint": "standard",
     "lint:fix": "standard --fix --verbose",
     "watch:test": "watch 'npm run test:local'",
-    "examples": "mocha examples/mocha.spec.js"
+    "examples": "mocha examples/mocha.spec.js",
+    "api": "mocha index.spec.js '--reporter=markdown' > api.md"
   },
   "author": "Víctor Herraiz Posada <victor.herraiz@gmail.com> (https://github.com/victorherraiz)",
   "license": "MIT",
