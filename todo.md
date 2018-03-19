@@ -15,3 +15,4 @@
 * Assertions can be disconnected
 * Is satisfies function necessary
 * I18n
+* Every should have a message and capture the exception?

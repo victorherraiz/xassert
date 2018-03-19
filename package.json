@@ -4,12 +4,13 @@
   "description": "xassert is just another assertion library",
   "main": "index.js",
   "scripts": {
-    "prepare": "npm run lint && npm test",
-    "test": "mocha index.spec.js",
-    "test:coverage": "nyc --reporter=html npm test",
+    "prepare": "npm test && npm run examples",
+    "test:local": "mocha index.spec.js",
+    "test:coverage": "nyc --reporter=html npm run test:local",
+    "test": "standard && nyc mocha index.spec.js",
     "lint": "standard",
     "lint:fix": "standard --fix --verbose",
-    "watch:test": "watch 'npm run test'",
+    "watch:test": "watch 'npm run test:local'",
     "examples": "mocha examples/mocha.spec.js"
   },
   "author": "Víctor Herraiz Posada <victor.herraiz@gmail.com> (https://github.com/victorherraiz)",

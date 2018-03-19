@@ -56,119 +56,119 @@ class Assertion {
 
   // ########### EQUALITY #############
 
-  isEqualTo (expected) {
-    if (expected !== this.value) fire(this, 'actual value id  different than expected value', expected)
+  isEqualTo (expected, message = 'actual value id  different than expected value') {
+    if (expected !== this.value) fire(this, message, expected)
     return this
   }
 
-  isEqualToAnyOf (expected) {
-    if (expected.every(arg => arg !== this.value)) fire(this, 'actual value is different than any expected value')
+  isEqualToAnyOf (expected, message = 'actual value is different than any expected value') {
+    if (expected.every(arg => arg !== this.value)) fire(this, message)
     return this
   }
 
-  isNotEqualTo (expected) {
-    if (expected === this.value) fire(this, 'actual value is equal to expected value')
+  isNotEqualTo (expected, message = 'actual value is equal to expected value') {
+    if (expected === this.value) fire(this, message)
     return this
   }
 
-  isNotEqualToAnyOf (expected) {
-    if (expected.some(arg => arg === this.value)) fire(this, 'actual value is equal to some expected value')
+  isNotEqualToAnyOf (expected, message = 'actual value is equal to some expected value') {
+    if (expected.some(arg => arg === this.value)) fire(this, message)
     return this
   }
 
-  isDeeplyEqualTo (expected) {
-    if (!deepEquals(this.value, expected)) fire(this, 'actual is not deeply equal to expected', expected)
+  isDeeplyEqualTo (expected, message = 'actual is not deeply equal to expected') {
+    if (!deepEquals(this.value, expected)) fire(this, message, expected)
     return this
   }
 
-  isNotDeeplyEqualTo (expected) {
-    if (deepEquals(this.value, expected)) fire(this, 'actual is deeply equal to expected', expected)
+  isNotDeeplyEqualTo (expected, message = 'actual is deeply equal to expected') {
+    if (deepEquals(this.value, expected)) fire(this, message, expected)
     return this
   }
 
-  isDeeplyEqualToAnyOf (expected) {
+  isDeeplyEqualToAnyOf (expected, message = 'actual value is different than any of the expected values') {
     if (expected.every(arg => !deepEquals(this.value, arg))) {
-      fire(this, 'actual value is different than any of the expected values')
+      fire(this, message)
     }
     return this
   }
 
-  isNotDeeplyEqualToAnyOf (expected) {
+  isNotDeeplyEqualToAnyOf (expected, message = 'actual value is equal one of non expected values') {
     if (expected.some(arg => deepEquals(this.value, arg))) {
-      fire(this, 'actual value is equal one of non expected values')
+      fire(this, message)
     }
     return this
   }
 
   // ######### IS & IS NOT ############
 
-  isNull () {
-    if (this.value !== null) fire(this, 'actual value is not null', null)
+  isNull (message = 'actual value is not null') {
+    if (this.value !== null) fire(this, message, null)
     return this
   }
 
-  isNotNull () {
-    if (this.value === null) fire(this, 'actual value is null')
+  isNotNull (message = 'actual value is null') {
+    if (this.value === null) fire(this, message)
     return this
   }
 
-  isUndefined () {
-    if (typeof this.value !== 'undefined') fire(this, 'actual is not undefined', undefined)
+  isUndefined (message = 'actual is not undefined') {
+    if (typeof this.value !== 'undefined') fire(this, message, undefined)
     return this
   }
 
-  isNotUndefined () {
-    if (typeof this.value === 'undefined') fire(this, 'actual value is undefined')
+  isNotUndefined (message = 'actual value is undefined') {
+    if (typeof this.value === 'undefined') fire(this, message)
     return this
   }
 
-  isNaN () {
-    if (!isNaN(this.value)) fire(this, 'actual value is not NaN', NaN)
+  isNaN (message = 'actual value is not NaN') {
+    if (!isNaN(this.value)) fire(this, message, NaN)
     return this
   }
 
-  isNotNaN () {
-    if (isNaN(this.value)) fire(this, 'actual value is NaN')
+  isNotNaN (message = 'actual value is NaN') {
+    if (isNaN(this.value)) fire(this, message)
     return this
   }
 
-  isAPromise () {
-    if (!isAPromise(this.value)) fire(this, 'Value is not a promise')
+  isAPromise (message = 'Value is not a promise') {
+    if (!isAPromise(this.value)) fire(this, message)
     return this
   }
 
-  isNotAPromise () {
-    if (isAPromise(this.value)) fire(this, 'Value is a promise')
+  isNotAPromise (message = 'Value is a promise') {
+    if (isAPromise(this.value)) fire(this, message)
     return this
   }
 
-  isANumber () {
-    if (typeof this.value !== 'number') fire(this, 'Value is not a number')
+  isANumber (message = 'Value is not a number') {
+    if (typeof this.value !== 'number') fire(this, message)
     return this
   }
 
-  isNotANumber () {
-    if (typeof this.value === 'number') fire(this, 'Value is a number')
+  isNotANumber (message = 'Value is a number') {
+    if (typeof this.value === 'number') fire(this, message)
     return this
   }
 
-  isAString () {
-    if (typeof this.value !== 'string') fire(this, 'Value is not a string')
+  isAString (message = 'Value is not a string') {
+    if (typeof this.value !== 'string') fire(this, message)
     return this
   }
 
-  isNotAString () {
-    if (typeof this.value === 'string') fire(this, 'Value is a string')
+  isNotAString (message = 'Value is a string') {
+    if (typeof this.value === 'string') fire(this, message)
     return this
   }
 
-  isAnArray () {
-    if (!Array.isArray(this.value)) fire(this, 'actual value is not an array', this.value)
+  isAnArray (message = 'actual value is not an array') {
+    if (!Array.isArray(this.value)) fire(this, message, this.value)
     return this
   }
 
-  isNotAnArray () {
-    if (Array.isArray(this.value)) fire(this, 'actual value is an array', this.value)
+  isNotAnArray (message = 'actual value is an array') {
+    if (Array.isArray(this.value)) fire(this, message, this.value)
     return this
   }
 
@@ -241,23 +241,23 @@ class Assertion {
     )
   }
 
-  isAbove (number) {
-    if (this.value <= number) fire(this, 'Value is not above expected', number)
+  isAbove (number, message = 'Value is not above expected') {
+    if (this.value <= number) fire(this, message, number)
     return this
   }
 
-  isAtLeast (number) {
-    if (this.value < number) fire(this, 'Value is not at least as expected', number)
+  isAtLeast (number, message = 'Value is not at least as expected') {
+    if (this.value < number) fire(this, message, number)
     return this
   }
 
-  isBelow (number) {
-    if (this.value >= number) fire(this, 'Value is not below expected', number)
+  isBelow (number, message = 'Value is not below expected') {
+    if (this.value >= number) fire(this, message, number)
     return this
   }
 
-  isAtMost (number) {
-    if (this.value > number) fire(this, 'Value is not at most as expected', number)
+  isAtMost (number, message = 'Value is not at most as expected') {
+    if (this.value > number) fire(this, message, number)
     return this
   }
 
@@ -268,18 +268,18 @@ class Assertion {
     return this
   }
 
-  isInstanceOf (expected) {
-    if (!(this.value instanceof expected)) fire(this, 'actual value is not instance of class', expected)
+  isInstanceOf (expected, message = 'actual value is not instance of class ' + expected.name) {
+    if (!(this.value instanceof expected)) fire(this, message, expected)
     return this
   }
 
-  isFrozen () {
-    if (!Object.isFrozen(this.value)) fire(this, 'actual value is not frozen')
+  isFrozen (message = 'actual value is not frozen') {
+    if (!Object.isFrozen(this.value)) fire(this, message)
     return this
   }
 
-  isNotFrozen () {
-    if (Object.isFrozen(this.value)) fire(this, 'actual value is frozen')
+  isNotFrozen (message = 'actual value is frozen') {
+    if (Object.isFrozen(this.value)) fire(this, message)
     return this
   }
 
