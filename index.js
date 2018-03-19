@@ -6,40 +6,26 @@ function isAPromise (promise) {
         typeof promise.then === 'function'
 }
 
-function isDeeplyEqualTo (a, b) {
-  if (a === b) {
-    return true
-  }
-
-  if (a === null || b === null) {
-    return false
-  }
+function deepEquals (a, b) {
+  if (a === b) return true
+  if (a === null || b === null) return false
 
   const type = typeof a
   const otherType = typeof b
 
   // TODO SUPPORT SYMBOLS
-  if (type !== otherType ||
-        type !== 'object' ||
-        a.constructor !== b.constructor) {
+  if (type !== otherType || type !== 'object' || a.constructor !== b.constructor) {
     return false
   }
 
   if (Array.isArray(a)) {
-    return a.length === b.length ? a.every(
-      (elem, i) => isDeeplyEqualTo(elem, b[i])
-    ) : false
-  }
-
-  const names = Object.getOwnPropertyNames(a)
-
-  if (names.length !== Object.getOwnPropertyNames(b).length) {
+    if (a.length === b.length) return a.every((el, i) => deepEquals(el, b[i]))
     return false
   }
 
-  return names.every(
-    (name) => b.hasOwnProperty(name) && isDeeplyEqualTo(a[name], b[name])
-  )
+  const names = Object.getOwnPropertyNames(a)
+  if (names.length !== Object.getOwnPropertyNames(b).length) return false
+  return names.every((n) => b.hasOwnProperty(n) && deepEquals(a[n], b[n]))
 }
 
 class AssertionError extends Error {
@@ -60,6 +46,10 @@ class Assertion {
     this.value = value
   }
 
+  getValue () {
+    return this.value
+  }
+
   get andIt () {
     return this
   }
@@ -77,7 +67,7 @@ class Assertion {
   }
 
   isNotEqualTo (expected) {
-    if (expected === this.value) fire(this, 'actual value it equal to expected value')
+    if (expected === this.value) fire(this, 'actual value is equal to expected value')
     return this
   }
 
@@ -87,19 +77,24 @@ class Assertion {
   }
 
   isDeeplyEqualTo (expected) {
-    if (!isDeeplyEqualTo(this.value, expected)) fire(this, 'actual is not deeply equal to expected', expected)
+    if (!deepEquals(this.value, expected)) fire(this, 'actual is not deeply equal to expected', expected)
+    return this
+  }
+
+  isNotDeeplyEqualTo (expected) {
+    if (deepEquals(this.value, expected)) fire(this, 'actual is deeply equal to expected', expected)
     return this
   }
 
   isDeeplyEqualToAnyOf (expected) {
-    if (expected.every(arg => !isDeeplyEqualTo(this.value, arg))) {
-      fire(this, 'actual value is different than any of expected')
+    if (expected.every(arg => !deepEquals(this.value, arg))) {
+      fire(this, 'actual value is different than any of the expected values')
     }
     return this
   }
 
   isNotDeeplyEqualToAnyOf (expected) {
-    if (expected.some(arg => isDeeplyEqualTo(this.value, arg))) {
+    if (expected.some(arg => deepEquals(this.value, arg))) {
       fire(this, 'actual value is equal one of non expected values')
     }
     return this
@@ -177,6 +172,8 @@ class Assertion {
     return this
   }
 
+  // ######## Arrays ########
+
   every (cb) {
     if (typeof cb !== 'function') throw new Error('it requires function as first parameter')
     this.value.forEach(it => cb(new Assertion(it)))
@@ -186,15 +183,14 @@ class Assertion {
   some (cb) {
     if (typeof cb !== 'function') throw new Error('it requires function as first parameter')
     const result = this.value.some(it => {
-      try { cb(new Assertion(it)) } 
-      catch (e) { return false }
+      try { cb(new Assertion(it)) } catch (e) { return false }
       return true
     })
-    if (!result) fire ('None passes')
+    if (!result) fire('None passes')
     return this
   }
 
-  // ############ PROPERTIES ##############
+  // ############ PROPERTIES ############
 
   hasProperty (name, cb) {
     if (!(this.value && name in this.value)) fire(this, 'missing property ' + name + ' in value')
@@ -266,9 +262,7 @@ class Assertion {
   }
 
   satisfies (cb) {
-    if (typeof cb !== 'function') {
-      throw new Error('satisfies requires a callback function')
-    }
+    if (typeof cb !== 'function') throw new Error('satisfies requires a callback function')
     const result = cb(this.value)
     if (!result) fire(this, 'It does not satisfy')
     return this
@@ -292,12 +286,9 @@ class Assertion {
   throws (test) {
     const cb = this.value
     if (typeof cb !== 'function') throw new Error('actual value mush be a function')
-    try { this.value() }
-    catch (error) {
+    try { this.value() } catch (error) {
       if (test) {
-        if (typeof test !== 'function') {
-          throw new Error('first parameters should be a function')
-        }
+        if (typeof test !== 'function') throw new Error('first parameters should be a function')
         test(new Assertion(error))
       }
       return this

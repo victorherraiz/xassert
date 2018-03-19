@@ -1,14 +1,16 @@
 # Extensible Assertions
 
-Disclaimer: work in progress, it is not stable for production yet. Any suggestion, defect and features are welcome.
+Disclaimer: work in progress, it is not stable for production yet. Any suggestion, defects and features are welcome.
 
 Just another assertion library with some interesting features:
 
 * Extensible
-* No property chains (e.g `is.not.equal`)
+* No complex property chains (e.g `is.not.equal`)
 * No property terminators (e.g. `is.true`) that could deliver false positives on a typographic error.
 * Promises support
-* Property assertion chaining:
+* Property assertion chaining
+
+## Chaining
 
 ```js
 assert(obj).hasOwnProperty('a')

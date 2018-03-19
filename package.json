@@ -15,9 +15,12 @@
   "author": "Víctor Herraiz Posada <victor.herraiz@gmail.com> (https://github.com/victorherraiz)",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "^5.0.1",
-    "nyc": "^11.4.1",
-    "standard": "^11.0.0",
+    "mocha": "^5.0.4",
+    "nyc": "^11.6.0",
+    "standard": "^11.0.1",
     "watch": "^1.0.2"
+  },
+  "dependencies": {
+    "npm": "^5.7.1"
   }
 }
