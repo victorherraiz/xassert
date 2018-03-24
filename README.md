@@ -2,7 +2,7 @@
 
 Disclaimer: work in progress, it is not stable for production yet. Any suggestion, defects and features are welcome.
 
-Just another assertion library with some interesting features:
+Just another assertion library with interesting features:
 
 * Extensible
 * No complex property chains (e.g `is.not.equal`)
@@ -13,6 +13,8 @@ Just another assertion library with some interesting features:
 ## Chaining
 
 ```js
+const assert = require('xassert')
+
 assert(obj).hasOwnProperty('a')
   .andIt.hasOwnProperty('b', it => it.isEqualTo('john'))
 ```
@@ -20,11 +22,13 @@ assert(obj).hasOwnProperty('a')
 ## Simple example
 
 ```js
-const assert = require('xassert');
-assert('banana').isEqualTo('banana');
-
+const assert = require('xassert')
+const result = getBananaMethod()
+assert(result).isEqualTo('banana')
 ```
 
 ## API
+
+### Value assertions
 
 TODO: Include all the API

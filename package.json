@@ -7,22 +7,25 @@
     "prepare": "npm test && npm run examples",
     "test:local": "mocha index.spec.js",
     "test:coverage": "nyc --reporter=html npm run test:local",
-    "test": "standard && nyc mocha index.spec.js",
-    "lint": "standard",
-    "lint:fix": "standard --fix --verbose",
-    "watch:test": "watch 'npm run test:local'",
+    "test": "npm run lint && nyc mocha index.spec.js",
+    "test:watch": "watch 'npm run test:local' --ignoreDotFiles",
+    "lint": "standard *.js",
+    "lint:fix": "standard *.js --fix --verbose",
     "examples": "mocha examples/mocha.spec.js",
-    "api": "mocha index.spec.js '--reporter=markdown' > api.md"
+    "docs": "rm -rf ./docs && jsdoc -c ./jsdoc.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/victorherraiz/xassert.git"
   },
   "author": "Víctor Herraiz Posada <victor.herraiz@gmail.com> (https://github.com/victorherraiz)",
   "license": "MIT",
   "devDependencies": {
+    "docdash": "^0.4.0",
+    "jsdoc": "^3.5.5",
     "mocha": "^5.0.4",
     "nyc": "^11.6.0",
     "standard": "^11.0.1",
     "watch": "^1.0.2"
-  },
-  "dependencies": {
-    "npm": "^5.7.1"
   }
 }

@@ -1,39 +1,55 @@
 /* eslint-env mocha */
-
 'use strict'
 
-const assert = require('.')
-const AssertionError = assert.Error
-const Assertion = assert.Assertion
-const identity = v => v
+const {
+  assert,
+  assertValue,
+  assertFunction,
+  assertPromise,
+  AssertionError,
+  ValueAssertion,
+  FunctionAssertion
+} = require('.')
 
 function throws (fn) {
-  assert(fn).throwsAn(AssertionError)
+  assertFunction(fn).throwsAn(AssertionError)
 }
 
-function shouldNotThrowWhen (when) {
-  return 'should not throw an assertion error when ' + when
+function itShouldNotThrowWhen (when, cb) {
+  it('should not throw an assertion error when ' + when, cb)
 }
 
-function itShouldNotThrowWhenTheValue (when, cb) {
-  it(shouldNotThrowWhen('the actual value ') + when, cb)
+function itShouldThrowWhen (when, cb) {
+  it('should throw an assertion error when ' + when, cb)
 }
 
-function shouldThrowWhen (when) {
-  return 'should throw an assertion error when ' + when
-}
+const resolved = Promise.resolve(true)
+const rejected = Promise.reject(new Error('A terrible error'))
 
-function itShouldThrowWhenTheValue (when, cb) {
-  it(shouldThrowWhen('the actual value ') + when, cb)
-}
+// Avoid warning
+rejected.catch((error) => assert(error).isInstanceOf(Error))
 
-function itShouldBeChainable (fn) {
-  it('should be chainable', function () {
-    assert(fn()).isInstanceOf(Assertion)
+describe('Value Assertions', function () {
+  function itShouldBeChainable (fn) {
+    it('should be chainable', function () {
+      assert(fn()).isInstanceOf(ValueAssertion)
+    })
+  }
+
+  function itShouldNotThrowWhenTheValue (when, cb) {
+    itShouldNotThrowWhen('the actual value ' + when, cb)
+  }
+
+  function itShouldThrowWhenTheValue (when, cb) {
+    itShouldThrowWhen('the actual value ' + when, cb)
+  }
+
+  describe('assert()', function () {
+    it('should be an alias of assertValue()', function () {
+      assert(assert).isEqualTo(assertValue)
+    })
   })
-}
 
-describe('xassert', function () {
   describe('getValue()', function () {
     it('should return the actual value', function () {
       const value = 4
@@ -54,7 +70,7 @@ describe('xassert', function () {
   })
   describe('isNotEqualTo(expected: any): this', function () {
     itShouldBeChainable(() => assert(true).isNotEqualTo(false))
-    it(shouldNotThrowWhen('the actual value is strictly not equal (i.e. !==) to expected'), function () {
+    itShouldNotThrowWhenTheValue('is strictly not equal (i.e. !==) to expected', function () {
       assert(4).isNotEqualTo(3)
       assert(4).isNotEqualTo('4')
     })
@@ -222,82 +238,38 @@ describe('xassert', function () {
     })
   })
 
-  describe('Promises', function () {
-    const resolved = Promise.resolve(true)
-    const rejected = Promise.reject(new Error('A terrible error'))
-
-    // Avoid warning
-    rejected.catch((error) => assert(error).isInstanceOf(Error))
-
-    function testRejection (promise) {
-      return promise.then(() => {
-        throw new Error('Rejection expected')
-      }, identity)
-    }
-
+  context('Promises', function () {
     describe('isAPromise(): this', function () {
       itShouldBeChainable(() => assert(resolved).isAPromise())
-      it(shouldNotThrowWhen('it is a promise'), function () {
+      itShouldNotThrowWhen('it is a promise', function () {
         assert(resolved).isAPromise()
         assert(rejected).isAPromise()
       })
-      it(shouldThrowWhen('is not a promise'), function () {
+      itShouldThrowWhen('is not a promise', function () {
         throws(() => assert('BANANA').isAPromise())
       })
     })
     describe('isNotAPromise(): this', function () {
       itShouldBeChainable(() => assert(null).isNotAPromise())
-      it(shouldNotThrowWhen('it is not a promise'), function () {
+      itShouldNotThrowWhen('it is not a promise', function () {
         assert('BANANA').isNotAPromise()
       })
-      it(shouldThrowWhen('is a promise'), function () {
+      itShouldThrowWhen('is a promise', function () {
         throws(() => assert(resolved).isNotAPromise())
         throws(() => assert(rejected).isNotAPromise())
       })
     })
-    describe('isFulfilled()', function () {
-      it(shouldNotThrowWhen('the promise is fulfilled'), function () {
-        return Promise.all([
-          assert(resolved).isFulfilled(),
-          assert(resolved).isFulfilled(it => it.isEqualTo(true))
-        ])
-      })
-      it(shouldThrowWhen('the promise is not rejected'), function () {
-        return Promise.all([
-          testRejection(assert(rejected).isFulfilled()),
-          testRejection(assert(resolved).isFulfilled(it => it.isEqualTo(false)))
-        ])
-      })
-    })
-    describe('isRejected()', function () {
-      it(shouldNotThrowWhen('the promise is rejected'), function () {
-        return Promise.all([
-          assert(rejected).isRejected(),
-          assert(rejected).isRejected((error) => {
-            error.hasProperty('message', it => it.isEqualTo('A terrible error'))
-          })
-        ])
-      })
-      it(shouldThrowWhen('the promise is not rejected'), function () {
-        return Promise.all([
-          testRejection(assert(resolved).isRejected()),
-          testRejection(assert(rejected).isRejected((error) => {
-            error.hasProperty('message', it => it.IsEqualTo('A terrible mistake'))
-          }))
-        ])
-      })
-    })
   })
 
-  describe('properties', function () {
+  context('properties', function () {
     const object = { a: 1, b: 'text', c: null }
     describe('hasProperty()', function () {
       itShouldBeChainable(() => assert(object).hasProperty('a'))
-      it(shouldNotThrowWhen('the property exists'), function () {
+      itShouldNotThrowWhen('the property exists', function () {
         assert(object).hasProperty('a')
         assert(object).hasProperty('a', it => it.isEqualTo(1))
       })
-      it(shouldThrowWhen('the property does not exist'), function () {
+      itShouldThrowWhen('the property does not exist', function () {
         throws(() => assert(object).hasProperty('x'))
         throws(() => assert(object).hasProperty('a', it => it.isEqualTo(2)))
       })
@@ -305,21 +277,21 @@ describe('xassert', function () {
 
     describe('doesNotHaveProperty()', function () {
       itShouldBeChainable(() => assert(object).doesNotHaveProperty('z'))
-      it(shouldNotThrowWhen('the property does not exists'), function () {
+      itShouldNotThrowWhen('the property does not exists', function () {
         assert(object).doesNotHaveProperty('z')
       })
-      it(shouldThrowWhen('the property exists'), function () {
+      itShouldThrowWhen('the property exists', function () {
         throws(() => assert(object).doesNotHaveProperty('a'))
       })
     })
 
     describe('hasOwnProperty()', function () {
       itShouldBeChainable(() => assert(object).hasOwnProperty('a'))
-      it(shouldNotThrowWhen('the own property exists'), function () {
+      itShouldNotThrowWhen('the own property exists', function () {
         assert(object).hasOwnProperty('a')
         assert(object).hasOwnProperty('a', value => value.isEqualTo(1))
       })
-      it(shouldThrowWhen('the own property does not exists'), function () {
+      itShouldThrowWhen('the own property does not exists', function () {
         throws(() => assert(object).hasOwnProperty('x'))
         throws(() => assert(object).hasOwnProperty('a', value => value.isEqualTo(2)))
       })
@@ -327,16 +299,16 @@ describe('xassert', function () {
 
     describe('doesNotHaveOwnProperty()', function () {
       itShouldBeChainable(() => assert(object).doesNotHaveOwnProperty('z'))
-      it(shouldNotThrowWhen('the own property does not exists'), function () {
+      itShouldNotThrowWhen('the own property does not exists', function () {
         assert(object).doesNotHaveOwnProperty('z')
       })
-      it(shouldThrowWhen('the own property exists'), function () {
+      itShouldThrowWhen('the own property exists', function () {
         throws(() => assert(object).doesNotHaveOwnProperty('a'))
       })
     })
   })
 
-  describe('Numbers', function () {
+  context('Numbers', function () {
     describe('isANumber()', function () {
       itShouldBeChainable(() => assert(4.3).isANumber())
       itShouldNotThrowWhenTheValue('is a Number', function () {
@@ -407,14 +379,14 @@ describe('xassert', function () {
     })
   })
 
-  describe('Arrays', function () {
+  context('Arrays', function () {
     const array1 = [2, 1, 3, 1]
     describe('isAnArray()', function () {
       itShouldBeChainable(() => assert(array1).isAnArray())
       itShouldNotThrowWhenTheValue('is an array', function () {
         assert(array1).isAnArray()
       })
-      it(shouldThrowWhen('it is not an array'), function () {
+      itShouldThrowWhen('it is not an array', function () {
         throws(() => assert('banana').isAnArray())
         throws(() => assert(null).isAnArray())
       })
@@ -425,66 +397,39 @@ describe('xassert', function () {
         assert('banana').isNotAnArray()
         assert(null).isNotAnArray()
       })
-      it(shouldThrowWhen('it is an array'), function () {
+      itShouldThrowWhen('it is an array', function () {
         throws(() => assert(array1).isNotAnArray())
       })
     })
     describe('every()', function () {
       itShouldBeChainable(() => assert(array1).every(it => it.isANumber()))
-      it(shouldNotThrowWhen('every item pass the following assertions'), function () {
+      itShouldNotThrowWhen('every item pass the following assertions', function () {
         assert(array1).every(it => it.isANumber())
       })
-      it(shouldThrowWhen('not every item pass the following assertions'), function () {
+      itShouldThrowWhen('not every item pass the following assertions', function () {
         throws(() => assert(array1).every(it => it.isBelow(3)))
       })
     })
     describe('some()', function () {
       itShouldBeChainable(() => assert(array1).every(it => it.isANumber()))
-      it(shouldNotThrowWhen('some item pass the following assertions'), function () {
+      itShouldNotThrowWhen('some item pass the following assertions', function () {
         assert(array1).some(it => it.isEqualTo(3))
       })
-      it(shouldThrowWhen('not any item pass the following assertions'), function () {
+      itShouldThrowWhen('not any item pass the following assertions', function () {
+        throws(() => assert(array1).some(it => it.isEqualTo(8)))
         throws(() => assert(array1).some(it => it.isEqualTo(8)))
       })
     })
     describe('hasLengthOf()', function () {
       itShouldBeChainable(() => assert(array1).every(it => it.isANumber()))
-      it(shouldNotThrowWhen('the length property match the assertion'), function () {
+      itShouldNotThrowWhen('the length property match the assertion', function () {
         assert(array1).hasLengthOf(array1.length)
         assert(array1).hasLengthOf(it => it.isAbove(array1.length - 1))
       })
-      it(shouldThrowWhen('the length property does not match the assertion'), function () {
+      itShouldThrowWhen('the length property does not match the assertion', function () {
         throws(() => assert(array1).hasLengthOf(array1.length + 1))
         throws(() => assert(array1).hasLengthOf(it => it.isAbove(array1.length + 1)))
       })
-    })
-  })
-
-  describe('throws()', function () {
-    function testException (fn) {
-      try { fn() } catch (e) {
-        if (!(e instanceof AssertionError)) throw new Error(fn + ' should throw an AssertionError')
-        return
-      }
-      throw new Error(fn + ' should throw an exception')
-    }
-    class SomeError extends Error {}
-    class AnotherError extends Error {}
-
-    itShouldBeChainable(() => assert(() => { throw new Error() }).throws())
-    it(shouldNotThrowWhen('the actual function throws an exception'), function () {
-      assert(() => { throw new Error() }).throws()
-      assert(() => { throw new SomeError() }).throwsA(SomeError)
-      assert(() => { throw new AnotherError() }).throwsAn(AnotherError)
-      assert(() => { throw new Error('ok') })
-        .throws(it => it.hasProperty('message', it => it.isEqualTo('ok')))
-    })
-    it(shouldThrowWhen('the actual function does not throw any exceptions'), function () {
-      testException(() => assert(() => {}).throws())
-      testException(() => assert(() => { throw new Error() }).throwsA(SomeError))
-      testException(() => assert(() => { throw new Error() }).throwsAn(AnotherError))
-      testException(() => assert(() => { throw new Error('ok') })
-        .throws(it => it.hasProperty('message', it => it.isEqualTo('ko'))))
     })
   })
 
@@ -499,7 +444,7 @@ describe('xassert', function () {
     })
   })
 
-  describe('Object Freeze', function () {
+  context('Object Freeze', function () {
     const frozen = Object.freeze({})
     const notFrozen = {}
     describe('isFrozen()', function () {
@@ -525,10 +470,10 @@ describe('xassert', function () {
   describe('isInstanceOf()', function () {
     const object = {}
     itShouldBeChainable(() => assert(object).isInstanceOf(Object))
-    it(shouldNotThrowWhen('it is instance of a given class'), function () {
+    itShouldNotThrowWhen('it is instance of a given class', function () {
       assert(object).isInstanceOf(Object)
     })
-    it(shouldNotThrowWhen('it is not instance of a given class'), function () {
+    itShouldNotThrowWhen('it is not instance of a given class', function () {
       throws(() => assert(object).isInstanceOf(Array))
     })
   })
@@ -537,13 +482,89 @@ describe('xassert', function () {
     it('should be able to accept extensions', function () {
       const banana = 'I am a banana!'
       const apple = 'I am an apple'
-      const { Assertion } = assert
-      Assertion.prototype.isABanana = function isABanana () {
+      ValueAssertion.prototype.isABanana = function isABanana () {
         if (this.value !== banana) throw new AssertionError('It not a banana')
         return this
       }
       assert(banana).isABanana()
       throws(() => assert(apple).isABanana())
+    })
+  })
+})
+describe('Function Assertions', function () {
+  function itShouldBeChainable (fn) {
+    it('should be chainable', function () {
+      assert(fn()).isInstanceOf(FunctionAssertion)
+    })
+  }
+
+  describe('throws()', function () {
+    function testException (fn) {
+      try { fn() } catch (e) {
+        if (!(e instanceof AssertionError)) throw new Error(fn + ' should throw an AssertionError')
+        return
+      }
+      throw new Error(fn + ' should throw an exception')
+    }
+    class SomeError extends Error {}
+    class AnotherError extends Error {}
+
+    itShouldBeChainable(() => assertFunction(() => { throw new Error() }).throws())
+    itShouldNotThrowWhen('the actual function throws an exception', function () {
+      assertFunction(() => { throw new Error() }).throws()
+      assertFunction(() => { throw new SomeError() }).throwsA(SomeError)
+      assertFunction(() => { throw new AnotherError() }).throwsAn(AnotherError)
+      assertFunction(() => { throw new Error('ok') })
+        .throws(it => it.hasProperty('message', it => it.isEqualTo('ok')))
+    })
+    itShouldThrowWhen('the actual function does not throw any exceptions', function () {
+      testException(() => assertFunction(() => {}).throws())
+      testException(() => assertFunction(() => { throw new Error() }).throwsA(SomeError))
+      testException(() => assertFunction(() => { throw new Error() }).throwsAn(AnotherError))
+      testException(() => assertFunction(() => { throw new Error('ok') })
+        .throws(it => it.hasProperty('message', it => it.isEqualTo('ko'))))
+    })
+  })
+})
+
+describe('Promise Assertions', function () {
+  function testRejection (promise) {
+    return promise.then(
+      () => { throw new Error('Rejection expected') },
+      (error) => assert(error).isInstanceOf(AssertionError)
+    )
+  }
+
+  describe('isFulfilled()', function () {
+    itShouldNotThrowWhen('the promise is fulfilled', function () {
+      return Promise.all([
+        assertPromise(resolved).isFulfilled(),
+        assertPromise(resolved).isFulfilled(it => it.isEqualTo(true))
+      ])
+    })
+    itShouldThrowWhen('the promise is not rejected', function () {
+      return Promise.all([
+        testRejection(assertPromise(rejected).isFulfilled()),
+        testRejection(assertPromise(resolved).isFulfilled(it => it.isEqualTo(false)))
+      ])
+    })
+  })
+  describe('isRejected()', function () {
+    itShouldNotThrowWhen('the promise is rejected', function () {
+      return Promise.all([
+        assertPromise(rejected).isRejected(),
+        assertPromise(rejected).isRejected((error) => {
+          error.hasProperty('message', it => it.isEqualTo('A terrible error'))
+        })
+      ])
+    })
+    itShouldThrowWhen('the promise is not rejected', function () {
+      return Promise.all([
+        testRejection(assertPromise(resolved).isRejected()),
+        testRejection(assertPromise(rejected).isRejected((error) => {
+          error.hasProperty('message', it => it.isEqualTo('A terrible mistake'))
+        }))
+      ])
     })
   })
 })

@@ -1,10 +1,49 @@
-'use strict'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>index.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ValueAssertion.html">ValueAssertion</a><ul class='methods'><li data-type='method'><a href="ValueAssertion.html#getFullName">getFullName</a></li><li data-type='method'><a href="ValueAssertion.html#getName">getName</a></li><li data-type='method'><a href="ValueAssertion.html#getValue">getValue</a></li><li data-type='method'><a href="ValueAssertion.html#isAnArray">isAnArray</a></li><li data-type='method'><a href="ValueAssertion.html#isANumber">isANumber</a></li><li data-type='method'><a href="ValueAssertion.html#isAPromise">isAPromise</a></li><li data-type='method'><a href="ValueAssertion.html#isAString">isAString</a></li><li data-type='method'><a href="ValueAssertion.html#isDeeplyEqualTo">isDeeplyEqualTo</a></li><li data-type='method'><a href="ValueAssertion.html#isDeeplyEqualToAnyOf">isDeeplyEqualToAnyOf</a></li><li data-type='method'><a href="ValueAssertion.html#isEqualTo">isEqualTo</a></li><li data-type='method'><a href="ValueAssertion.html#isEqualToAnyOf">isEqualToAnyOf</a></li><li data-type='method'><a href="ValueAssertion.html#isNaN">isNaN</a></li><li data-type='method'><a href="ValueAssertion.html#isNotAnArray">isNotAnArray</a></li><li data-type='method'><a href="ValueAssertion.html#isNotANumber">isNotANumber</a></li><li data-type='method'><a href="ValueAssertion.html#isNotAPromise">isNotAPromise</a></li><li data-type='method'><a href="ValueAssertion.html#isNotAString">isNotAString</a></li><li data-type='method'><a href="ValueAssertion.html#isNotDeeplyEqualTo">isNotDeeplyEqualTo</a></li><li data-type='method'><a href="ValueAssertion.html#isNotDeeplyEqualToAnyOf">isNotDeeplyEqualToAnyOf</a></li><li data-type='method'><a href="ValueAssertion.html#isNotEqualTo">isNotEqualTo</a></li><li data-type='method'><a href="ValueAssertion.html#isNotEqualToAnyOf">isNotEqualToAnyOf</a></li><li data-type='method'><a href="ValueAssertion.html#isNotNaN">isNotNaN</a></li><li data-type='method'><a href="ValueAssertion.html#isNotNull">isNotNull</a></li><li data-type='method'><a href="ValueAssertion.html#isNotUndefined">isNotUndefined</a></li><li data-type='method'><a href="ValueAssertion.html#isNull">isNull</a></li><li data-type='method'><a href="ValueAssertion.html#isUndefined">isUndefined</a></li><li data-type='method'><a href="ValueAssertion.html#named">named</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">index.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict'
 
 const messageField = /{([\s\S]+?)}/g
 
 function isAPromise (promise) {
-  return promise !== null &&
-    (typeof promise === 'object' || typeof promise === 'function') &&
+  return promise !== null &amp;&amp;
+    (typeof promise === 'object' || typeof promise === 'function') &amp;&amp;
     typeof promise.then === 'function'
 }
 
@@ -27,7 +66,7 @@ function deepEquals (a, b) {
 
   const names = Object.getOwnPropertyNames(a)
   if (names.length !== Object.getOwnPropertyNames(b).length) return false
-  return names.every((n) => b.hasOwnProperty(n) && deepEquals(a[n], b[n]))
+  return names.every((n) => b.hasOwnProperty(n) &amp;&amp; deepEquals(a[n], b[n]))
 }
 
 class AssertionError extends Error {
@@ -244,7 +283,7 @@ class ValueAssertion {
     return this
   }
 
-  // ######### IS & IS NOT ############
+  // ######### IS &amp; IS NOT ############
 
   /**
    * Test if the actual value is null
@@ -461,18 +500,18 @@ class ValueAssertion {
   // ############ PROPERTIES ############
 
   hasProperty (name, cb) {
-    if (!(this.value && name in this.value)) this.fire('missing property ' + name + ' in actual value')
+    if (!(this.value &amp;&amp; name in this.value)) this.fire('missing property ' + name + ' in actual value')
     if (typeof cb === 'function') cb(new ValueAssertion(this.value[name], 'property ' + name, this))
     return this
   }
 
   doesNotHaveProperty (name) {
-    if (this.value && name in this.value) this.fire('found property ' + name + ' in value')
+    if (this.value &amp;&amp; name in this.value) this.fire('found property ' + name + ' in value')
     return this
   }
 
   hasOwnProperty (name, cb) {
-    if (!(this.value instanceof Object && this.value.hasOwnProperty(name))) {
+    if (!(this.value instanceof Object &amp;&amp; this.value.hasOwnProperty(name))) {
       this.fire('missing own property ' + name + ' in value')
     }
     if (typeof cb === 'function') cb(new ValueAssertion(this.value[name], 'own property ' + name, this))
@@ -480,7 +519,7 @@ class ValueAssertion {
   }
 
   doesNotHaveOwnProperty (name) {
-    if (this.value instanceof Object && this.value.hasOwnProperty(name)) {
+    if (this.value instanceof Object &amp;&amp; this.value.hasOwnProperty(name)) {
       this.fire('found own property ' + name + ' in value')
     }
     return this
@@ -496,12 +535,12 @@ class ValueAssertion {
   }
 
   isAbove (number, message = '{name} is not above expected value') {
-    if (this.value <= number) this.fire(message, number)
+    if (this.value &lt;= number) this.fire(message, number)
     return this
   }
 
   isAtLeast (number, message = '{name} is not at least as expected value') {
-    if (this.value < number) this.fire(message, number)
+    if (this.value &lt; number) this.fire(message, number)
     return this
   }
 
@@ -616,3 +655,22 @@ module.exports = Object.assign(assertValue, {
   PromiseAssertion,
   AssertionError
 })
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Mar 24 2018 13:40:12 GMT+0100 (CET) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

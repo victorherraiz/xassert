@@ -1,0 +1,14 @@
+{
+    "source": {
+        "include": [
+            "./index.js"
+        ]
+    },
+    "sourceType": "module",
+    "plugins": [],
+    "opts": {
+        "destination": "./docs",
+        "template": "./node_modules/docdash",
+        "readme": "./README.md"
+    }
+}
