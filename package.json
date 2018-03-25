@@ -1,6 +1,6 @@
 {
   "name": "xassert",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "xassert is just another assertion library",
   "main": "index.js",
   "scripts": {
