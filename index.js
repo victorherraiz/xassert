@@ -152,13 +152,14 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is strictly equal to expected value
+   * Asserts that the actual value is strictly equal to expected value
    *
    * @example
    * assert(value).isEqualTo('Banana')
    * @param {*} expected - expected value
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not strictly equal to expected value
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not strictly equal to expected value
    * @return {this} chainable method
    */
   isEqualTo (expected, message = '{name} is different than expected value') {
@@ -167,13 +168,14 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is strictly equal to any of expected values
+   * Asserts that the actual value is strictly equal to any of expected values
    *
    * @example
    * assert(value).isEqualToAnyOf(['Banana', 'Apple'])
    * @param {*} expected - expected value
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not strictly equal to any of expected values
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not strictly equal to any of expected values
    * @return {this} chainable method
    */
   isEqualToAnyOf (expected, message = '{name} is different than any expected value') {
@@ -182,13 +184,14 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not strictly equal to expected value
+   * Asserts that the actual value is not strictly equal to expected value
    *
    * @example
    * assert(value).isNotEqualTo('Banana')
    * @param {*} expected - expected value
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is strictly equal to expected value
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is strictly equal to expected value
    * @return {this} chainable method
    */
   isNotEqualTo (expected, message = '{name} is equal to expected value') {
@@ -197,13 +200,14 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not strictly equal to any of expected values
+   * Asserts that the actual value is not strictly equal to any of expected values
    *
    * @example
    * assert(value).isNotEqualToAnyOf(['Banana', 'Apple'])
    * @param {*} expected - expected value
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is strictly equal to any of expected values
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is strictly equal to any of expected values
    * @return {this} chainable method
    */
   isNotEqualToAnyOf (expected, message = '{name} is equal to some expected value') {
@@ -212,14 +216,15 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is deeply equal to expected value
+   * Asserts that the actual value is deeply equal to expected value
    *
    * @example
    * assert({ c: 3 }).isDeeplyEqualTo({ c: 3 }) // Success
    * assert({ c: 3 }).isDeeplyEqualTo('3') // Fail
    * @param {*} expected - expected value
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not deeply equal to expected value
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not deeply equal to expected value
    * @return {this} chainable method
    */
   isDeeplyEqualTo (expected, message = '{name} is not deeply equal to expected value') {
@@ -233,21 +238,23 @@ class Assertion {
    * assert({ c: 3 }).is({ c: 3 }) // Success
    * @param {*} expected - expected value
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not deeply equal to expected value
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not deeply equal to expected value
    * @return {this} chainable method
    */
   is (expected, message = '{name} is not expected value') {
     return this.isDeeplyEqualTo(expected, message)
   }
   /**
-   * Test if the actual value is not deeply equal to expected value
+   * Asserts that the actual value is not deeply equal to expected value
    *
    * @example
    * assert({ c: 3 }).isNotDeeplyEqualTo({ c: 3 }) // Fail
    * assert({ c: 3 }).isNotDeeplyEqualTo('3') // Success
    * @param {*} expected - expected value
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is deeply equal to expected values
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is deeply equal to expected values
    * @return {this} chainable method
    */
   isNotDeeplyEqualTo (expected, message = 'actual is deeply equal to expected') {
@@ -256,14 +263,15 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is deeply equal to any of expected values
+   * Asserts that the actual value is deeply equal to any of expected values
    *
    * @example
    * assert({ c: 3 }).isDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 3 }]) // Success
    * assert({ c: 3 }).isDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 4 }])') // Fail
    * @param {*} expected - expected value
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not deeply equal to any of expected values
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not deeply equal to any of expected values
    * @return {this} chainable method
    */
   isDeeplyEqualToAnyOf (expected, message = '{name} is different than any of the expected values') {
@@ -274,14 +282,15 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not deeply equal to any of expected values
+   * Asserts that the actual value is not deeply equal to any of expected values
    *
    * @example
    * assert({ c: 3 }).isNotDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 3 }]) // Fail
    * assert({ c: 3 }).isNotDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 4 }])') // Success
    * @param {*} expected - expected value
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is deeply equal to any of expected values
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is deeply equal to any of expected values
    * @return {this} chainable method
    */
   isNotDeeplyEqualToAnyOf (expected, message = '{name} is equal one of non expected values') {
@@ -294,12 +303,13 @@ class Assertion {
   // ######### IS & IS NOT ############
 
   /**
-   * Test if the actual value is null
+   * Asserts that the actual value is null
    *
    * @example
    * assert(null).isNull() // Success
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not null
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not null
    * @return {this} chainable method
    */
   isNull (message = '{name} is not null') {
@@ -308,12 +318,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not null
+   * Asserts that the actual value is not null
    *
    * @example
    * assert('a').isNotNull() // Success
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not null
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not null
    * @return {this} chainable method
    */
   isNotNull (message = '{name} is null') {
@@ -322,12 +333,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is undefined
+   * Asserts that the actual value is undefined
    *
    * @example
    * assert(undefined).isUndefined() // Success
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not null
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not null
    * @return {this} chainable method
    */
   isUndefined (message = '{name} is not undefined') {
@@ -336,12 +348,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not undefined
+   * Asserts that the actual value is not undefined
    *
    * @example
    * assert(undefined).isNotUndefined() // Fail
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is undefined
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is undefined
    * @return {this} chainable method
    */
   isNotUndefined (message = '{name} is undefined') {
@@ -350,12 +363,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is NaN
+   * Asserts that the actual value is NaN
    *
    * @example
    * assert('j').isNaN() // Success
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not NaN
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not NaN
    * @return {this} chainable method
    */
   isNaN (message = '{name} is not NaN') {
@@ -364,12 +378,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not NaN
+   * Asserts that the actual value is not NaN
    *
    * @example
    * assert('j').isNotNaN() // Fail
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is  NaN
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is  NaN
    * @return {this} chainable method
    */
   isNotNaN (message = '{name} is NaN') {
@@ -378,12 +393,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is a promise
+   * Asserts that the actual value is a promise
    *
    * @example
    * assert(Promise.resolve(3)).isAPromise() // Success
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not a promise
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not a promise
    * @return {this} chainable method
    */
   isAPromise (message = '{name} is not a promise') {
@@ -392,12 +408,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not promise
+   * Asserts that the actual value is not promise
    *
    * @example
    * assert(Promise.resolve(3)).isNotAPromise() // Fail
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is a promise
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is a promise
    * @return {this} chainable method
    */
   isNotAPromise (message = '{name} is a promise') {
@@ -406,12 +423,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is a number
+   * Asserts that the actual value is a number
    *
    * @example
    * assert(4.3).isANumber() // Success
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not a number
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not a number
    * @return {this} chainable method
    */
   isANumber (message = '{name} is not a number') {
@@ -420,12 +438,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not a number
+   * Asserts that the actual value is not a number
    *
    * @example
    * assert(4.3).isNotANumber() // Fail
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is a number
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is a number
    * @return {this} chainable method
    */
   isNotANumber (message = '{name} is a number') {
@@ -434,12 +453,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is a string
+   * Asserts that the actual value is a string
    *
    * @example
    * assert('banana').isAString() // Success
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not a string
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not a string
    * @return {this} chainable method
    */
   isAString (message = '{name} is not a string') {
@@ -448,12 +468,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not a string
+   * Asserts that the actual value is not a string
    *
    * @example
    * assert('banana').isNotAString() // Fail
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is a string
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is a string
    * @return {this} chainable method
    */
   isNotAString (message = '{name} is a string') {
@@ -462,12 +483,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is an array
+   * Asserts that the actual value is an array
    *
    * @example
    * assert([2, 3]).isAnArray() // Success
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is not an array
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not an array
    * @return {this} chainable method
    */
   isAnArray (message = '{name} is not an array') {
@@ -476,12 +498,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value is not an array
+   * Asserts that the actual value is not an array
    *
    * @example
    * assert(33).isNotAnArray() // Success
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value is an array
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is an array
    * @return {this} chainable method
    */
   isNotAnArray (message = '{name} is an array') {
@@ -490,11 +513,12 @@ class Assertion {
   }
 
   /**
-   * Test if every value of the array pass the test
+   * Asserts that every value of the array pass the test
    * @example
    * assert([3, 6]).every(it => it.isAbove(2)) // Success
    * @param {module:xassert~assertionCallback} test - test for each element
-   * @throws {module:xassert.AssertionError} when any value fails the test
+   * @throws {module:xassert.AssertionError}
+   * when any value fails the test
    * @return {this} chainable method
    */
   every (test) {
@@ -504,12 +528,13 @@ class Assertion {
   }
 
   /**
-   * Test if some value of the array pass the test
+   * Asserts that some value of the array pass the test
    * @example
    * assert([3, 6]).some(it => it.isAbove(5)) // Success
    * @param {module:xassert~assertionCallback} test - test for each element
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when no value passes the test
+   * @throws {module:xassert.AssertionError}
+   * when no value passes the test
    * @return {this} chainable method
    */
   some (test, message = '{name} does not contain any item that passes any test') {
@@ -526,13 +551,14 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value has the given property and run some test on it
+   * Asserts that the actual value has the given property and run some test on it
    * @example
    * assert({ a: 3 }).hasProperty('a', it => it.isAbove(2)) // Success
    * @param {string} name - name of the property
    * @param {module:xassert~assertionCallback} test - test for the property
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value does not have
+   * @throws {module:xassert.AssertionError}
+   * when the actual value does not have
    * the given property or the tests fails
    * @return {this} chainable method
    */
@@ -543,12 +569,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value does not have the given property
+   * Asserts that the actual value does not have the given property
    * @example
    * assert({ a: 3 }).doesNotHaveProperty('b') // Success
    * @param {string} name - name of the property
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value has the given property
+   * @throws {module:xassert.AssertionError}
+   * when the actual value has the given property
    * @return {this} chainable method
    */
   doesNotHaveProperty (name, message = '{name} contains the property {property}') {
@@ -557,13 +584,14 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value has the own given property and run some test on it
+   * Asserts that the actual value has the own given property and run some test on it
    * @example
    * assert({ a: 3 }).hasOwnProperty('a', it => it.isAbove(2)) // Success
    * @param {string} name - name of the property
    * @param {module:xassert~assertionCallback} test - test for the property
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value does not have
+   * @throws {module:xassert.AssertionError}
+   * when the actual value does not have
    * the own given property or the tests fails
    * @return {this} chainable method
    */
@@ -576,12 +604,13 @@ class Assertion {
   }
 
   /**
-   * Test if the actual value does not have the own given property
+   * Asserts that the actual value does not have the own given property
    * @example
    * assert({ a: 3 }).doesNotHaveOwnProperty('b') // Success
    * @param {string} name - name of the property
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the actual value has the own given property
+   * @throws {module:xassert.AssertionError}
+   * when the actual value has the own given property
    * @return {this} chainable method
    */
   doesNotHaveOwnProperty (name, message = '{name} contains the own property {property}') {
@@ -592,7 +621,7 @@ class Assertion {
   }
 
   /**
-   * Test if the property length exists and optionally pass some test against it
+   * Asserts that the property length exists and optionally pass some test against it
    * @example
    * assert('').hasLength() // Success
    * assert(1).hasLength() // Fails
@@ -600,7 +629,8 @@ class Assertion {
    * assert([2, 5]).hasLength(it => it.isAbove(1)) // Success
    * @param {module:xassert~assertionCallback} [test] - test for the property
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the property does not exists or the test fails
+   * @throws {module:xassert.AssertionError}
+   * when the property does not exists or the test fails
    * @return {this} chainable method
    */
   hasLength (test, message = '{name} does not have length property') {
@@ -611,15 +641,17 @@ class Assertion {
     if (typeof test === 'function') test(new Assertion(ref.length, 'length property', this))
     return this
   }
+
   /**
-   * Test if the property length exists and it is equal to the giving number
+   * Asserts that the property length exists and it is equal to the giving number
    * @example
    * assert('').hasLengthOf(0) // Success
    * assert(1).hasLengthOf(1) // Fails
    * assert([2, 3]).hasLengthOf(2) // Success
    * @param {number} expected - expected length
    * @param {string} [message] - error message
-   * @throws {module:xassert.AssertionError} when the property does not exists or the test fails
+   * @throws {module:xassert.AssertionError}
+   * when the property does not exists or the test fails
    * @return {this} chainable method
    */
   hasLengthOf (expected, message) {
@@ -627,59 +659,158 @@ class Assertion {
     return this
   }
 
+  /**
+   * Asserts that the actual value is above the given number
+   * @example
+   * assert(4).isAbove(3) // Success
+   * assert(4).isAbove(4) // Fails
+   * @param {number} number - given number
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not above the given number
+   * @return {this} chainable method
+   */
   isAbove (number, message = '{name} is not above expected value') {
     if (this.ref <= number) this.fire(message, number)
     return this
   }
 
+  /**
+   * Asserts that the actual value is at least the given number
+   * @example
+   * assert(4).isAtLeast(4) // Success
+   * assert(4).isAtLeast(5) // Fails
+   * @param {number} number - given number
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not at least the given number
+   * @return {this} chainable method
+   */
   isAtLeast (number, message = '{name} is not at least as expected value') {
     if (this.ref < number) this.fire(message, number)
     return this
   }
 
+  /**
+   * Asserts that the actual value is below the given number
+   * @example
+   * assert(4).isBelow(5) // Success
+   * assert(4).isBelow(4) // Fails
+   * @param {number} number - given number
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not bellow the given number
+   * @return {this} chainable method
+   */
   isBelow (number, message = '{name} is not below expected value') {
     if (this.ref >= number) this.fire(message, number)
     return this
   }
 
-  isAtMost (number, message = '{name} is not at most as expected') {
+  /**
+   * Asserts that the actual value is at most the given number
+   * @example
+   * assert(4).isAtMost(4) // Success
+   * assert(4).isAtMost(3) // Fails
+   * @param {number} number - given number
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not at most the given number
+   * @return {this} chainable method
+   */
+  isAtMost (number, message = '{name} is not at most as expected value') {
     if (this.ref > number) this.fire(message, number)
     return this
   }
 
-  satisfies (cb) {
-    if (typeof cb !== 'function') throw new Error('satisfies requires a callback function')
-    const result = cb(this.ref)
-    if (!result) this.fire('It does not satisfy')
-    return this
-  }
-
+  /**
+   * Asserts that the actual value is a instance of a given class
+   * @example
+   * assert(new Cat()).isInstanceOf(Animal) // Success
+   * assert(null).isInstanceOf(Object) // Success
+   * assert(aCar).isInstanceOf(Plane) // Fail
+   * @param {number} expected - expected class
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not a instance of a given class
+   * @return {this} chainable method
+   */
   isInstanceOf (expected, message = '{name} is not instance of class ' + expected.name) {
     if (!(this.ref instanceof expected)) this.fire(message, expected)
     return this
   }
 
+  /**
+   * Asserts that the actual value is frozen
+   * @example
+   * assert(Object.freeze({ a: 1 })).isFrozen() // Success
+   * assert({ a: 1 }).isFrozen() // Fail
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is not frozen
+   * @return {this} chainable method
+   */
   isFrozen (message = '{name} is not frozen') {
     if (!Object.isFrozen(this.ref)) this.fire(message)
     return this
   }
 
+  /**
+   * Asserts that the actual value is not frozen
+   * @example
+   * assert(Object.freeze({ a: 1 })).isNotFrozen() // Fail
+   * assert({ a: 1 }).isNotFrozen() // Success
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the actual value is frozen
+   * @return {this} chainable method
+   */
   isNotFrozen (message = '{name} is frozen') {
     if (Object.isFrozen(this.ref)) this.fire(message)
     return this
   }
 
+  /**
+   * Asserts that the promise is fulfilled and the test passes
+   * @example
+   * assert(Promise.resolve(3)).isFulfilled() // Success
+   * assert(Promise.resolve(3)).isFulfilled(it => it.isEqualTo(3)) // Success
+   * assert(Promise.resolve(3)).isFulfilled(it => it.isEqualTo(5)) // Fail
+   * assert(Promise.reject(new Error())).isFulfilled() // Fail
+   * @param {module:xassert~assertionCallback} [test] - test for the resolved value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the promise is rejected and the test fails
+   * @return {Promise<any>} resolved promise with the value
+   */
   isFulfilled (test, message = '{name} has been rejected') {
     return this.ref.then(
-      value => typeof test === 'function' ? test(new Assertion(value)) : value,
+      value => {
+        if (typeof test === 'function') test(new Assertion(value))
+        return value
+      },
       ex => this.fire(message)
     )
   }
 
-  isRejected (cb, message = '{name} has been fulfilled') {
+  /**
+   * Asserts that the promise is rejected and the test passes
+   * @example
+   * assert(Promise.resolve(3)).isRejected() // Fail
+   * assert(Promise.reject(new Error)).isRejected(it => it.isInstanceOf(Error)) // Success
+   * @param {module:xassert~assertionCallback} [test] - test for the resolved value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the promise is fulfilled and the test fails
+   * @return {Promise<any>} resolved promise with the error
+   */
+  isRejected (test, message = '{name} has been fulfilled') {
     return this.ref.then(
       value => this.fire(message),
-      ex => typeof cb === 'function' ? cb(new Assertion(ex)) : ex
+      error => {
+        if (typeof test === 'function') test(new Assertion(error))
+        return error
+      }
     )
   }
 
@@ -702,6 +833,13 @@ class Assertion {
 
   throwsAn (ref) {
     return this.throwsA(ref)
+  }
+
+  satisfies (cb) {
+    if (typeof cb !== 'function') throw new Error('satisfies requires a callback function')
+    const result = cb(this.ref)
+    if (!result) this.fire('It does not satisfy')
+    return this
   }
 }
 
