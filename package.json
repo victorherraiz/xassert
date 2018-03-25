@@ -9,7 +9,6 @@
     "test:unit": "mocha index.spec.js",
     "test:examples": "mocha examples/mocha.spec.js",
     "test": "npm run lint && npm run test:examples && nyc npm run test:unit",
-    "test:watch": "watch 'npm run test:local' --ignoreDotFiles",
     "lint": "standard *.js",
     "lint:fix": "standard *.js --fix --verbose",
     "docs": "rm -rf ./docs && jsdoc -c ./jsdoc.json"
@@ -25,7 +24,7 @@
     "jsdoc": "^3.5.5",
     "mocha": "^5.0.4",
     "nyc": "^11.6.0",
-    "standard": "^11.0.1",
-    "watch": "^1.0.2"
-  }
+    "standard": "^11.0.1"
+  },
+  "dependencies": {}
 }
