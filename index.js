@@ -1,6 +1,10 @@
+/* eslint valid-jsdoc: 2 */
 'use strict'
 
-const messageField = /{([\s\S]+?)}/g
+/**
+ * Extensible assertions
+ * @module xassert
+ */
 
 function isAPromise (promise) {
   return promise !== null &&
@@ -30,7 +34,28 @@ function deepEquals (a, b) {
   return names.every((n) => b.hasOwnProperty(n) && deepEquals(a[n], b[n]))
 }
 
+const messageField = /{([\s\S]+?)}/g
+function processMessage (message, values) {
+  return message.replace(messageField, (match, field) => {
+    if (field in values) return values[field]
+    return match
+  })
+}
+
+function requireTestFunction (fn, message = 'Test function required') {
+  if (typeof fn !== 'function') throw new Error(message)
+}
+
+/**
+ * Assertions will throw this error when a test fails
+ * @static
+ */
 class AssertionError extends Error {
+  /**
+   * @param {string} message - Error message
+   * @param {*} [actual] - Actual value
+   * @param {*} [expected] - Actual value
+   */
   constructor (message, actual, expected) {
     super(message)
     this.name = 'Assertion Error'
@@ -40,27 +65,35 @@ class AssertionError extends Error {
 }
 
 /**
- * Contains assertions related to values
+ * This callback is displayed as part of the Requester class.
+ * @callback assertionCallback
+ * @param {module:xassert.Assertion} it
  */
-class ValueAssertion {
+
+/**
+ * It contains all the assertion methods.
+ * @static
+ */
+class Assertion {
   /**
-   * @param {any} value - value to be asserted
+   * Do no use it directly. Use the [module function]{@link module:xassert}
+   * @param {*} ref - actual value, promise or function
    * @param {string} [name] - name of the field that could be used in the error messages
    * @param {ValueAssertion} [parent] - parent assertion
    */
-  constructor (value, name = 'actual value', parent) {
-    this.value = value
+  constructor (ref, name, parent) {
+    this.ref = ref
     this.name = name
     this.parent = parent
   }
 
   /**
    * @example
-   * console.log(assert('orange').isAString().getValue()) // prints 'orange'
-   * @returns {any} current value
+   * console.log(assert('orange').isAString().getRef()) // prints 'orange'
+   * @returns {*} current value
    */
-  getValue () {
-    return this.value
+  getRef () {
+    return this.ref
   }
 
   /**
@@ -70,14 +103,17 @@ class ValueAssertion {
    * @returns {string} current name
    */
   getName () {
-    return this.name
+    if (this.name) return this.name
+    if (isAPromise(this.ref)) return 'promise'
+    if (typeof this.ref === 'function') return 'function'
+    return 'actual value'
   }
 
   /**
    * @returns {string} full name including parent names
    */
   getFullName () {
-    return this.parent ? this.parent.getFullName() + ' ' + this.name : this.name
+    return this.parent ? this.parent.getFullName() + ' ' + this.getName() : this.getName()
   }
 
   /**
@@ -91,11 +127,11 @@ class ValueAssertion {
   }
 
   /**
-   * @param {spring} name - name of the field
-   * @returns {ValueAssertion} new ValueAssertion with the same value and a new name
+   * @param {string} name - name of the field
+   * @returns {Assertion} new ValueAssertion with the same value and a new name
    */
   named (name) {
-    return new ValueAssertion(this.value, name)
+    return new Assertion(this.ref, name)
   }
 
   /**
@@ -105,15 +141,14 @@ class ValueAssertion {
   /**
    * It fires an AssertionError
    * @private
-   * @param {string} message
-   * @param {any} [expected]
+   * @param {string} message - error message
+   * @param {*} [expected] - expected value
+   * @returns {void}
    */
   fire (message, expected) {
-    const processed = message.replace(messageField, (match, key) => {
-      if (key === 'name') return this.getFullName()
-      return match
-    })
-    throw new AssertionError(processed, this.value, expected)
+    throw new AssertionError(
+      processMessage(message, { name: this.getFullName() }),
+      this.ref, expected)
   }
 
   /**
@@ -121,13 +156,13 @@ class ValueAssertion {
    *
    * @example
    * assert(value).isEqualTo('Banana')
-   * @param {any} expected
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not strictly equal to expected value
-   * @return {this}
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not strictly equal to expected value
+   * @return {this} chainable method
    */
   isEqualTo (expected, message = '{name} is different than expected value') {
-    if (expected !== this.value) this.fire(message, expected)
+    if (expected !== this.ref) this.fire(message, expected)
     return this
   }
 
@@ -136,13 +171,13 @@ class ValueAssertion {
    *
    * @example
    * assert(value).isEqualToAnyOf(['Banana', 'Apple'])
-   * @param {any} expected
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not strictly equal to any of expected values
-   * @return {this}
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not strictly equal to any of expected values
+   * @return {this} chainable method
    */
   isEqualToAnyOf (expected, message = '{name} is different than any expected value') {
-    if (expected.every(arg => arg !== this.value)) this.fire(message)
+    if (expected.every(arg => arg !== this.ref)) this.fire(message)
     return this
   }
 
@@ -151,13 +186,13 @@ class ValueAssertion {
    *
    * @example
    * assert(value).isNotEqualTo('Banana')
-   * @param {any} expected
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is strictly equal to expected value
-   * @return {this}
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is strictly equal to expected value
+   * @return {this} chainable method
    */
   isNotEqualTo (expected, message = '{name} is equal to expected value') {
-    if (expected === this.value) this.fire(message)
+    if (expected === this.ref) this.fire(message)
     return this
   }
 
@@ -166,13 +201,13 @@ class ValueAssertion {
    *
    * @example
    * assert(value).isNotEqualToAnyOf(['Banana', 'Apple'])
-   * @param {any} expected
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is strictly equal to any of expected values
-   * @return {this}
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is strictly equal to any of expected values
+   * @return {this} chainable method
    */
   isNotEqualToAnyOf (expected, message = '{name} is equal to some expected value') {
-    if (expected.some(arg => arg === this.value)) this.fire(message)
+    if (expected.some(arg => arg === this.ref)) this.fire(message)
     return this
   }
 
@@ -182,29 +217,41 @@ class ValueAssertion {
    * @example
    * assert({ c: 3 }).isDeeplyEqualTo({ c: 3 }) // Success
    * assert({ c: 3 }).isDeeplyEqualTo('3') // Fail
-   * @param {any} expected
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not deeply equal to expected value
-   * @return {this}
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not deeply equal to expected value
+   * @return {this} chainable method
    */
-  isDeeplyEqualTo (expected, message = 'actual is not deeply equal to expected') {
-    if (!deepEquals(this.value, expected)) this.fire(message, expected)
+  isDeeplyEqualTo (expected, message = '{name} is not deeply equal to expected value') {
+    if (!deepEquals(this.ref, expected)) this.fire(message, expected)
     return this
   }
 
+  /**
+   * Alias of {@link module:xassert.Assertion#isDeeplyEqualTo}
+   * @example
+   * assert({ c: 3 }).is({ c: 3 }) // Success
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not deeply equal to expected value
+   * @return {this} chainable method
+   */
+  is (expected, message = '{name} is not expected value') {
+    return this.isDeeplyEqualTo(expected, message)
+  }
   /**
    * Test if the actual value is not deeply equal to expected value
    *
    * @example
    * assert({ c: 3 }).isNotDeeplyEqualTo({ c: 3 }) // Fail
    * assert({ c: 3 }).isNotDeeplyEqualTo('3') // Success
-   * @param {any} expected
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is deeply equal to expected values
-   * @return {this}
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is deeply equal to expected values
+   * @return {this} chainable method
    */
   isNotDeeplyEqualTo (expected, message = 'actual is deeply equal to expected') {
-    if (deepEquals(this.value, expected)) this.fire(message, expected)
+    if (deepEquals(this.ref, expected)) this.fire(message, expected)
     return this
   }
 
@@ -214,13 +261,13 @@ class ValueAssertion {
    * @example
    * assert({ c: 3 }).isDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 3 }]) // Success
    * assert({ c: 3 }).isDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 4 }])') // Fail
-   * @param {any} expected
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not deeply equal to any of expected values
-   * @return {this}
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not deeply equal to any of expected values
+   * @return {this} chainable method
    */
   isDeeplyEqualToAnyOf (expected, message = '{name} is different than any of the expected values') {
-    if (expected.every(arg => !deepEquals(this.value, arg))) {
+    if (expected.every(arg => !deepEquals(this.ref, arg))) {
       this.fire(message)
     }
     return this
@@ -232,13 +279,13 @@ class ValueAssertion {
    * @example
    * assert({ c: 3 }).isNotDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 3 }]) // Fail
    * assert({ c: 3 }).isNotDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 4 }])') // Success
-   * @param {any} expected
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is deeply equal to any of expected values
-   * @return {this}
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is deeply equal to any of expected values
+   * @return {this} chainable method
    */
   isNotDeeplyEqualToAnyOf (expected, message = '{name} is equal one of non expected values') {
-    if (expected.some(arg => deepEquals(this.value, arg))) {
+    if (expected.some(arg => deepEquals(this.ref, arg))) {
       this.fire(message)
     }
     return this
@@ -251,12 +298,12 @@ class ValueAssertion {
    *
    * @example
    * assert(null).isNull() // Success
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not null
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not null
+   * @return {this} chainable method
    */
   isNull (message = '{name} is not null') {
-    if (this.value !== null) this.fire(message, null)
+    if (this.ref !== null) this.fire(message, null)
     return this
   }
 
@@ -265,12 +312,12 @@ class ValueAssertion {
    *
    * @example
    * assert('a').isNotNull() // Success
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not null
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not null
+   * @return {this} chainable method
    */
   isNotNull (message = '{name} is null') {
-    if (this.value === null) this.fire(message)
+    if (this.ref === null) this.fire(message)
     return this
   }
 
@@ -279,12 +326,12 @@ class ValueAssertion {
    *
    * @example
    * assert(undefined).isUndefined() // Success
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not null
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not null
+   * @return {this} chainable method
    */
   isUndefined (message = '{name} is not undefined') {
-    if (typeof this.value !== 'undefined') this.fire(message, undefined)
+    if (typeof this.ref !== 'undefined') this.fire(message, undefined)
     return this
   }
 
@@ -293,12 +340,12 @@ class ValueAssertion {
    *
    * @example
    * assert(undefined).isNotUndefined() // Fail
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is undefined
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is undefined
+   * @return {this} chainable method
    */
   isNotUndefined (message = '{name} is undefined') {
-    if (typeof this.value === 'undefined') this.fire(message)
+    if (typeof this.ref === 'undefined') this.fire(message)
     return this
   }
 
@@ -307,12 +354,12 @@ class ValueAssertion {
    *
    * @example
    * assert('j').isNaN() // Success
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not NaN
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not NaN
+   * @return {this} chainable method
    */
   isNaN (message = '{name} is not NaN') {
-    if (!isNaN(this.value)) this.fire(message, NaN)
+    if (!isNaN(this.ref)) this.fire(message, NaN)
     return this
   }
 
@@ -321,12 +368,12 @@ class ValueAssertion {
    *
    * @example
    * assert('j').isNotNaN() // Fail
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is  NaN
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is  NaN
+   * @return {this} chainable method
    */
   isNotNaN (message = '{name} is NaN') {
-    if (isNaN(this.value)) this.fire(message)
+    if (isNaN(this.ref)) this.fire(message)
     return this
   }
 
@@ -335,12 +382,12 @@ class ValueAssertion {
    *
    * @example
    * assert(Promise.resolve(3)).isAPromise() // Success
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not a promise
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not a promise
+   * @return {this} chainable method
    */
   isAPromise (message = '{name} is not a promise') {
-    if (!isAPromise(this.value)) this.fire(message)
+    if (!isAPromise(this.ref)) this.fire(message)
     return this
   }
 
@@ -349,12 +396,12 @@ class ValueAssertion {
    *
    * @example
    * assert(Promise.resolve(3)).isNotAPromise() // Fail
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is a promise
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is a promise
+   * @return {this} chainable method
    */
   isNotAPromise (message = '{name} is a promise') {
-    if (isAPromise(this.value)) this.fire(message)
+    if (isAPromise(this.ref)) this.fire(message)
     return this
   }
 
@@ -363,12 +410,12 @@ class ValueAssertion {
    *
    * @example
    * assert(4.3).isANumber() // Success
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not a number
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not a number
+   * @return {this} chainable method
    */
   isANumber (message = '{name} is not a number') {
-    if (typeof this.value !== 'number') this.fire(message)
+    if (typeof this.ref !== 'number') this.fire(message)
     return this
   }
 
@@ -377,12 +424,12 @@ class ValueAssertion {
    *
    * @example
    * assert(4.3).isNotANumber() // Fail
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is a number
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is a number
+   * @return {this} chainable method
    */
   isNotANumber (message = '{name} is a number') {
-    if (typeof this.value === 'number') this.fire(message)
+    if (typeof this.ref === 'number') this.fire(message)
     return this
   }
 
@@ -391,12 +438,12 @@ class ValueAssertion {
    *
    * @example
    * assert('banana').isAString() // Success
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not a string
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not a string
+   * @return {this} chainable method
    */
   isAString (message = '{name} is not a string') {
-    if (typeof this.value !== 'string') this.fire(message)
+    if (typeof this.ref !== 'string') this.fire(message)
     return this
   }
 
@@ -405,12 +452,12 @@ class ValueAssertion {
    *
    * @example
    * assert('banana').isNotAString() // Fail
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is a string
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is a string
+   * @return {this} chainable method
    */
   isNotAString (message = '{name} is a string') {
-    if (typeof this.value === 'string') this.fire(message)
+    if (typeof this.ref === 'string') this.fire(message)
     return this
   }
 
@@ -419,12 +466,12 @@ class ValueAssertion {
    *
    * @example
    * assert([2, 3]).isAnArray() // Success
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is not an array
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is not an array
+   * @return {this} chainable method
    */
   isAnArray (message = '{name} is not an array') {
-    if (!Array.isArray(this.value)) this.fire(message, this.value)
+    if (!Array.isArray(this.ref)) this.fire(message, this.ref)
     return this
   }
 
@@ -433,154 +480,220 @@ class ValueAssertion {
    *
    * @example
    * assert(33).isNotAnArray() // Success
-   * @param {spring} [message]
-   * @throws {AssertionError} when the actual value is an array
-   * @return {this}
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value is an array
+   * @return {this} chainable method
    */
   isNotAnArray (message = '{name} is an array') {
-    if (Array.isArray(this.value)) this.fire(message, this.value)
+    if (Array.isArray(this.ref)) this.fire(message, this.ref)
     return this
   }
 
-  every (cb) {
-    if (typeof cb !== 'function') throw new Error('it requires function as first parameter')
-    this.value.forEach((it, i) => cb(new ValueAssertion(it, 'at index ' + i, this)))
+  /**
+   * Test if every value of the array pass the test
+   * @example
+   * assert([3, 6]).every(it => it.isAbove(2)) // Success
+   * @param {module:xassert~assertionCallback} test - test for each element
+   * @throws {module:xassert.AssertionError} when any value fails the test
+   * @return {this} chainable method
+   */
+  every (test) {
+    requireTestFunction(test)
+    this.ref.forEach((it, i) => test(new Assertion(it, 'at index ' + i, this)))
     return this
   }
 
-  some (cb, message = '{name} does not contain any item that passes any test') {
-    if (typeof cb !== 'function') throw new Error('it requires function as first parameter')
-    const result = this.value.some(it => {
-      try { cb(new ValueAssertion(it)) } catch (e) { return false }
+  /**
+   * Test if some value of the array pass the test
+   * @example
+   * assert([3, 6]).some(it => it.isAbove(5)) // Success
+   * @param {module:xassert~assertionCallback} test - test for each element
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when no value passes the test
+   * @return {this} chainable method
+   */
+  some (test, message = '{name} does not contain any item that passes any test') {
+    requireTestFunction(test)
+    const result = this.ref.some(it => {
+      try { test(new Assertion(it)) } catch (error) {
+        if (error instanceof AssertionError) return false
+        throw error
+      }
       return true
     })
     if (!result) this.fire(message)
     return this
   }
 
-  // ############ PROPERTIES ############
-
-  hasProperty (name, cb) {
-    if (!(this.value && name in this.value)) this.fire('missing property ' + name + ' in actual value')
-    if (typeof cb === 'function') cb(new ValueAssertion(this.value[name], 'property ' + name, this))
+  /**
+   * Test if the actual value has the given property and run some test on it
+   * @example
+   * assert({ a: 3 }).hasProperty('a', it => it.isAbove(2)) // Success
+   * @param {string} name - name of the property
+   * @param {module:xassert~assertionCallback} test - test for the property
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value does not have
+   * the given property or the tests fails
+   * @return {this} chainable method
+   */
+  hasProperty (name, test, message = '{name} does not contain the property {property}') {
+    if (!(this.ref && name in this.ref)) this.fire(processMessage(message, { property: name }))
+    if (typeof test === 'function') test(new Assertion(this.ref[name], 'property ' + name, this))
     return this
   }
 
-  doesNotHaveProperty (name) {
-    if (this.value && name in this.value) this.fire('found property ' + name + ' in value')
+  /**
+   * Test if the actual value does not have the given property
+   * @example
+   * assert({ a: 3 }).doesNotHaveProperty('b') // Success
+   * @param {string} name - name of the property
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value has the given property
+   * @return {this} chainable method
+   */
+  doesNotHaveProperty (name, message = '{name} contains the property {property}') {
+    if (this.ref && name in this.ref) this.fire(processMessage(message, { property: name }))
     return this
   }
 
-  hasOwnProperty (name, cb) {
-    if (!(this.value instanceof Object && this.value.hasOwnProperty(name))) {
-      this.fire('missing own property ' + name + ' in value')
+  /**
+   * Test if the actual value has the own given property and run some test on it
+   * @example
+   * assert({ a: 3 }).hasOwnProperty('a', it => it.isAbove(2)) // Success
+   * @param {string} name - name of the property
+   * @param {module:xassert~assertionCallback} test - test for the property
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value does not have
+   * the own given property or the tests fails
+   * @return {this} chainable method
+   */
+  hasOwnProperty (name, test, message = '{name} does not contain the own property {property}') {
+    if (!(this.ref instanceof Object && this.ref.hasOwnProperty(name))) {
+      this.fire(processMessage(message, { property: name }))
     }
-    if (typeof cb === 'function') cb(new ValueAssertion(this.value[name], 'own property ' + name, this))
+    if (typeof test === 'function') test(new Assertion(this.ref[name], 'own property ' + name, this))
     return this
   }
 
-  doesNotHaveOwnProperty (name) {
-    if (this.value instanceof Object && this.value.hasOwnProperty(name)) {
-      this.fire('found own property ' + name + ' in value')
+  /**
+   * Test if the actual value does not have the own given property
+   * @example
+   * assert({ a: 3 }).doesNotHaveOwnProperty('b') // Success
+   * @param {string} name - name of the property
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the actual value has the own given property
+   * @return {this} chainable method
+   */
+  doesNotHaveOwnProperty (name, message = '{name} contains the own property {property}') {
+    if (this.ref instanceof Object && this.ref.hasOwnProperty(name)) {
+      this.fire(processMessage(message, { property: name }))
     }
     return this
   }
 
-  // TODO split?
-  hasLengthOf (test) {
-    if (!this.value) return this.fire('{name} does not have length property')
-    const assertion = new ValueAssertion(this.value.length)
-    if (Number.isInteger(test)) return assertion.isEqualTo(test)
-    if (typeof test === 'function') return test(assertion)
-    throw new Error('Requires integer or function')
+  /**
+   * Test if the property length exists and optionally pass some test against it
+   * @example
+   * assert('').hasLength() // Success
+   * assert(1).hasLength() // Fails
+   * assert([2]).hasLength() // Success
+   * assert([2, 5]).hasLength(it => it.isAbove(1)) // Success
+   * @param {module:xassert~assertionCallback} [test] - test for the property
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the property does not exists or the test fails
+   * @return {this} chainable method
+   */
+  hasLength (test, message = '{name} does not have length property') {
+    const ref = this.ref
+    // Empty strings are falsy
+    if (ref === null || ref === undefined || typeof ref.length !== 'number') this.fire(message)
+    // 'length' in 'a string' throws an error
+    if (typeof test === 'function') test(new Assertion(ref.length, 'length property', this))
+    return this
+  }
+  /**
+   * Test if the property length exists and it is equal to the giving number
+   * @example
+   * assert('').hasLengthOf(0) // Success
+   * assert(1).hasLengthOf(1) // Fails
+   * assert([2, 3]).hasLengthOf(2) // Success
+   * @param {number} expected - expected length
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError} when the property does not exists or the test fails
+   * @return {this} chainable method
+   */
+  hasLengthOf (expected, message) {
+    this.hasLength(it => it.isEqualTo(expected, message))
+    return this
   }
 
   isAbove (number, message = '{name} is not above expected value') {
-    if (this.value <= number) this.fire(message, number)
+    if (this.ref <= number) this.fire(message, number)
     return this
   }
 
   isAtLeast (number, message = '{name} is not at least as expected value') {
-    if (this.value < number) this.fire(message, number)
+    if (this.ref < number) this.fire(message, number)
     return this
   }
 
   isBelow (number, message = '{name} is not below expected value') {
-    if (this.value >= number) this.fire(message, number)
+    if (this.ref >= number) this.fire(message, number)
     return this
   }
 
   isAtMost (number, message = '{name} is not at most as expected') {
-    if (this.value > number) this.fire(message, number)
+    if (this.ref > number) this.fire(message, number)
     return this
   }
 
   satisfies (cb) {
     if (typeof cb !== 'function') throw new Error('satisfies requires a callback function')
-    const result = cb(this.value)
+    const result = cb(this.ref)
     if (!result) this.fire('It does not satisfy')
     return this
   }
 
   isInstanceOf (expected, message = '{name} is not instance of class ' + expected.name) {
-    if (!(this.value instanceof expected)) this.fire(message, expected)
+    if (!(this.ref instanceof expected)) this.fire(message, expected)
     return this
   }
 
   isFrozen (message = '{name} is not frozen') {
-    if (!Object.isFrozen(this.value)) this.fire(message)
+    if (!Object.isFrozen(this.ref)) this.fire(message)
     return this
   }
 
   isNotFrozen (message = '{name} is frozen') {
-    if (Object.isFrozen(this.value)) this.fire(message)
+    if (Object.isFrozen(this.ref)) this.fire(message)
     return this
   }
-}
 
-class PromiseAssertion {
-  constructor (promise, name = 'promise') {
-    if (!isAPromise(promise)) throw new Error('Promise assertion requires a function')
-    this.promise = promise
-    this.name = name
-  }
-  fire (message) {
-    const processed = message.replace(messageField, (match, key) => {
-      if (key === 'name') return this.name
-      return match
-    })
-    throw new AssertionError(processed)
-  }
   isFulfilled (test, message = '{name} has been rejected') {
-    return this.promise.then(
-      value => typeof test === 'function' ? test(new ValueAssertion(value)) : value,
+    return this.ref.then(
+      value => typeof test === 'function' ? test(new Assertion(value)) : value,
       ex => this.fire(message)
     )
   }
+
   isRejected (cb, message = '{name} has been fulfilled') {
-    return this.promise.then(
+    return this.ref.then(
       value => this.fire(message),
-      ex => typeof cb === 'function' ? cb(new ValueAssertion(ex)) : ex
+      ex => typeof cb === 'function' ? cb(new Assertion(ex)) : ex
     )
   }
-}
 
-class FunctionAssertion {
-  constructor (fn, name = 'function') {
-    if (typeof fn !== 'function') throw new Error('Function assertion requires a function')
-    this.fn = fn
-  }
   throws (test, message = '{name} did not throw') {
     try {
-      this.fn()
+      this.ref()
     } catch (error) {
       if (test) {
         if (typeof test !== 'function') throw new Error('first parameters should be a function')
-        test(new ValueAssertion(error))
+        test(new Assertion(error))
       }
       return this
     }
-    throw new AssertionError(message)
+    this.fire(message)
   }
 
   throwsA (ref) {
@@ -592,27 +705,21 @@ class FunctionAssertion {
   }
 }
 
-function assertValue (any, name) {
-  return new ValueAssertion(any, name)
+/**
+ * Creates and returns a value assertion
+ * @alias module:xassert
+ * @param {*} ref - actual value, promise or function
+ * @param {string} [name] - alias for the actual value
+ * @returns {module:xassert.Assertion} new assertion instance
+ * @example
+ * const assert = require('xassert')
+ * assert(4).isANumber()
+ */
+function assert (ref, name) {
+  return new Assertion(ref, name)
 }
 
-function assertFunction (fn, name) {
-  return new FunctionAssertion(fn, name)
-}
+assert.Assertion = Assertion
+assert.AssertionError = AssertionError
 
-function assertPromise (promise, name) {
-  return new PromiseAssertion(promise, name)
-}
-
-module.exports = Object.assign(assertValue, {
-  assert: assertValue,
-  assertValue,
-  fn: assertFunction,
-  assertFunction,
-  promise: assertPromise,
-  assertPromise,
-  ValueAssertion,
-  FunctionAssertion,
-  PromiseAssertion,
-  AssertionError
-})
+module.exports = assert

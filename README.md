@@ -16,7 +16,9 @@ Just another assertion library with interesting features:
 const assert = require('xassert')
 
 assert(obj).hasOwnProperty('a')
-  .andIt.hasOwnProperty('b', it => it.isEqualTo('john'))
+  // andIt is optional
+  .andIt.hasOwnProperty('b', it => it
+    .isEqualTo('john'))
 ```
 
 ## Simple example

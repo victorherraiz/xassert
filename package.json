@@ -4,14 +4,14 @@
   "description": "xassert is just another assertion library",
   "main": "index.js",
   "scripts": {
-    "prepare": "npm test && npm run examples",
-    "test:local": "mocha index.spec.js",
-    "test:coverage": "nyc --reporter=html npm run test:local",
-    "test": "npm run lint && nyc mocha index.spec.js",
+    "prepublishOnly": "npm test",
+    "test:coverage": "nyc --reporter=html npm run test:unit",
+    "test:unit": "mocha index.spec.js",
+    "test:examples": "mocha examples/mocha.spec.js",
+    "test": "npm run lint && npm run test:examples && nyc npm run test:unit",
     "test:watch": "watch 'npm run test:local' --ignoreDotFiles",
     "lint": "standard *.js",
     "lint:fix": "standard *.js --fix --verbose",
-    "examples": "mocha examples/mocha.spec.js",
     "docs": "rm -rf ./docs && jsdoc -c ./jsdoc.json"
   },
   "repository": {
