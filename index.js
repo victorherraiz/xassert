@@ -814,25 +814,63 @@ class Assertion {
     )
   }
 
+  /**
+   * Asserts that the provided function throws an exception and optionally tests the error
+   * @example
+   * assert(() => throw new Error()).throws() // Success
+   * assert(() => throw new Error()).throws(it => it.isInstanceOf(Error)) // Success
+   * assert(() => 3).throws() // Fails
+   * @param {module:xassert~assertionCallback} [test] - test error
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the provided function does not throw an exception or the test fails
+   * @return {this} chainable method
+   */
   throws (test, message = '{name} did not throw') {
     try {
       this.ref()
     } catch (error) {
       if (test) {
-        if (typeof test !== 'function') throw new Error('first parameters should be a function')
-        test(new Assertion(error))
+        requireTestFunction(test)
+        test(new Assertion(error, 'error', this))
       }
       return this
     }
     this.fire(message)
   }
 
-  throwsA (ref) {
-    return this.throws(it => it.isInstanceOf(ref))
+  /**
+   * Asserts that the provided function throws the given exception
+   * @example
+   * assert(() => throw new NotFoundError()).throwsA(NotFoundError) // Success
+   * assert(() => throw new ServerError()).throwsA(NotFoundError) // Fails
+   * @param {class} [classRef] - class reference
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the provided function does not throw the given exception
+   * @return {this} chainable method
+   */
+  throwsA (classRef, message = '{name} did not throw a {class}') {
+    return this.throws(it => it.isInstanceOf(
+      classRef,
+      processMessage(message, { class: classRef.constructor.name })
+    ))
   }
 
-  throwsAn (ref) {
-    return this.throwsA(ref)
+  /**
+   * Asserts that the provided function throws the given exception.
+   * Alias of {@link module:xassert.Assertion#throwsA}
+   * @example
+   * assert(() => throw new Error()).throwsAn(Error) // Success
+   * assert(() => throw new Error()).throwsAn(InvalidFormat) // Fails
+   * @param {class} [classRef] - class reference
+   * @param {string} [message] - error message
+   * @throws {module:xassert.AssertionError}
+   * when the provided function does not throw the given exception
+   * @return {this} chainable method
+   */
+  throwsAn (classRef, message = '{name} did not throw an {class}') {
+    return this.throwsA(classRef)
   }
 
   satisfies (cb) {
