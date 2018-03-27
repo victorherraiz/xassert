@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>AssertionError - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,58 +27,259 @@
 
 <div id="main">
     
+    <h1 class="page-title">AssertionError</h1>
+    
 
     
 
 
 
+
+<section>
+
+<header>
+    
+        <h2>
+        AssertionError
+        </h2>
+        
+            <div class="class-description">Assertions will throw this error when a test fails</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="AssertionError"><span class="type-signature"></span>new AssertionError<span class="signature">(message, actual<span class="signature-attributes">opt</span>, expected<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
     
 
 
 
 
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Error message</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>actual</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Actual value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>expected</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Actual value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
     
+    </div>
 
+    
 
-    <section class="readme">
-        <article><h1>Extensible Assertions</h1><p>[Homepage]</p>
-<p>Just another assertion library with interesting features</p>
-<ul>
-<li>Extensible</li>
-<li>No complex property chains (e.g <code>is.not.equal</code>)</li>
-<li>No property terminators (e.g. <code>is.true</code>) that could deliver false positives on a typographic error.</li>
-<li>Promises support</li>
-<li>Property assertion chaining</li>
-</ul>
-<h2>Simple example</h2><pre class="prettyprint source lang-js"><code>const assert = require('xassert')
-const result = 'banana'
-assert(result).isEqualTo('banana')</code></pre><h2>Chaining</h2><pre class="prettyprint source lang-js"><code>const assert = require('xassert')
+    
 
-assert(obj)
-  .hasOwnProperty('a').andIt
-  .hasOwnProperty('b', it => it.isEqualTo('john'))</code></pre><h2>Extensible</h2><pre class="prettyprint source lang-js"><code>// CommonJS
-const assert = require('xassert')
-const { Assertion, AssertionError } = assert
-// Or
-import assert, { Assertion, AssertionError } from xassert
+    
 
-// Add a new method
-Assertion.prototype.isABanana = function isABanana () {
-  if (this.ref !== banana) throw new AssertionError('It not a banana')
-  return this
-}
-const banana = 'I am a banana!'
-const apple = 'I am an apple'
-assert(banana).isABanana()
-assert(() => assert(apple).isABanana()).throwsAn(AssertionError)</code></pre></article>
-    </section>
+     
 
+    
 
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

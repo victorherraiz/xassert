@@ -1,8 +1,8 @@
-# Extensible Assertions
+# xassert - Extensible Assertions
 
-Disclaimer: work in progress, it is not stable for production yet. Any suggestion, defects and features are welcome.
+[Homepage](https://victorherraiz.github.io/xassert/)
 
-Just another assertion library with interesting features:
+Just another assertion library with interesting features
 
 * Extensible
 * No complex property chains (e.g `is.not.equal`)
@@ -10,27 +10,40 @@ Just another assertion library with interesting features:
 * Promises support
 * Property assertion chaining
 
+## Simple example
+
+```js
+const assert = require('xassert')
+const result = 'banana'
+assert(result).isEqualTo('banana')
+```
+
 ## Chaining
 
 ```js
 const assert = require('xassert')
 
-assert(obj).hasOwnProperty('a')
-  // andIt is optional
-  .andIt.hasOwnProperty('b', it => it
-    .isEqualTo('john'))
+assert(obj)
+  .hasOwnProperty('a').andIt
+  .hasOwnProperty('b', it => it.isEqualTo('john'))
 ```
 
-## Simple example
+## Extensible
 
 ```js
+// CommonJS
 const assert = require('xassert')
-const result = getBananaMethod()
-assert(result).isEqualTo('banana')
+const { Assertion, AssertionError } = assert
+// Or
+import assert, { Assertion, AssertionError } from xassert
+
+// Add a new method
+Assertion.prototype.isABanana = function isABanana () {
+  if (this.ref !== banana) throw new AssertionError('It not a banana')
+  return this
+}
+const banana = 'I am a banana!'
+const apple = 'I am an apple'
+assert(banana).isABanana()
+assert(() => assert(apple).isABanana()).throwsAn(AssertionError)
 ```
-
-## API
-
-### Value assertions
-
-TODO: Include all the API

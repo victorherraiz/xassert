@@ -19,3 +19,5 @@
 * I18n
 * Every should have a message and capture the exception?
 * test that isFulfilled return always the value
+* Create helper method to create custom assertions (e.g.: `matcher(it => it.isAString()`)
+* assert.fail()
