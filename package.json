@@ -2,6 +2,13 @@
   "name": "xassert",
   "version": "0.3.4",
   "description": "xassert is just another assertion library",
+  "keywords": [
+    "assertion",
+    "assert",
+    "test",
+    "TDD",
+    "BDD"
+  ],
   "main": "index.js",
   "scripts": {
     "prepublishOnly": "npm test",
