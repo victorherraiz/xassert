@@ -309,6 +309,73 @@ class Assertion {
   }
 
   /**
+   * Asserts that the actual value is strictly true
+   *
+   * @example
+   * assert(true).isTrue() // Success
+   * assert('apple').isTrue() // Fail
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value is not strictly true
+   * @return {this} chainable method
+   */
+  isTrue (message = '{name} is not strictly true') {
+    if (this.ref !== true) this.fire(message, true)
+    return this
+  }
+
+  /**
+   * Asserts that the actual value is strictly false
+   *
+   * @example
+   * assert(false).isFalse() // Success
+   * assert('apple').isFalse() // Fail
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value is not strictly false
+   * @return {this} chainable method
+   */
+  isFalse (message = '{name} is not strictly false') {
+    if (this.ref !== false) this.fire(message, false)
+    return this
+  }
+
+  /**
+   * Asserts that the actual value is truthy
+   *
+   * @example
+   * assert(true).isTruthy() // Success
+   * assert('apple').isTruthy() // Success
+   * assert(null).isTruthy() // Fail
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value is not truthy
+   * @return {this} chainable method
+   */
+  isTruthy (message = '{name} is not truthy') {
+    if (!this.ref) this.fire(message)
+    return this
+  }
+
+  /**
+   * Asserts that the actual value is falsy
+   *
+   * @example
+   * assert(false).isFalsy() // Success
+   * assert(undefined).isFalsy() // Success
+   * assert('').isFalsy() // Success
+   * assert('apple').isFalsy() // Success
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value is not falsy
+   * @return {this} chainable method
+   */
+  isFalsy (message = '{name} is not falsy') {
+    if (this.ref) this.fire(message)
+    return this
+  }
+
+  /**
    * Asserts that the actual value is not null
    *
    * @example

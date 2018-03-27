@@ -35,193 +35,242 @@ function itShouldBeChainable (fn) {
     assert(fn()).isInstanceOf(Assertion)
   })
 }
-
-describe('xassert module', function () {
-  describe('getRef()', function () {
-    it('should return the ref', function () {
-      const value = 4
-      assert(assert(value).getRef()).isEqualTo(value)
-    })
-  })
-  describe('isEqualTo(expected: any): this', function () {
-    itShouldBeChainable(() => assert(true).isEqualTo(true))
-    itShouldNotThrowWhenTheValue('is strictly equal (i.e. ===) to expected', function () {
-      assert(4).isEqualTo(4)
-    })
-    itShouldThrowWhenTheValue('is not strictly equal (i.e. ===) to expected', function () {
-      throws(() => assert(4).isEqualTo(5))
-      throws(() => assert(4).isEqualTo('4'))
-      throws(() => assert({ a: 1 }).isEqualTo({ a: 1 }))
-      throws(() => assert([1]).isEqualTo([1]))
-    })
-  })
-  describe('isNotEqualTo(expected: any): this', function () {
-    itShouldBeChainable(() => assert(true).isNotEqualTo(false))
-    itShouldNotThrowWhenTheValue('is strictly not equal (i.e. !==) to expected', function () {
-      assert(4).isNotEqualTo(3)
-      assert(4).isNotEqualTo('4')
-    })
-    itShouldThrowWhenTheValue('is not strictly not equal (i.e. !==) to expected', function () {
-      const obj = { a: 1 }
-      throws(() => assert(true).isNotEqualTo(true))
-      throws(() => assert(obj).isNotEqualTo(obj))
-    })
-  })
-  describe('isEqualToAnyOf(any[]): this', function () {
-    itShouldBeChainable(() => assert(true).isEqualToAnyOf([true]))
-    itShouldNotThrowWhenTheValue('is strictly equal (i.e. ===) to any of expected', function () {
-      assert(4).isEqualToAnyOf([3, 4])
-    })
-    itShouldThrowWhenTheValue('is not strictly equal (i.e. ===) to any of expected', function () {
-      throws(() => assert(4).isEqualToAnyOf([5, 6]))
-      throws(() => assert(4).isEqualToAnyOf(['4']))
-      throws(() => assert({ a: 1 }).isEqualToAnyOf([{ a: 1 }]))
-      throws(() => assert([1]).isEqualToAnyOf([1]))
-    })
-  })
-  describe('isNotEqualToAnyOf(any[]): this', function () {
-    itShouldBeChainable(() => assert(true).isNotEqualToAnyOf([false]))
-    itShouldNotThrowWhenTheValue('is strictly not equal (i.e. !==) to any of expected', function () {
-      assert(4).isNotEqualToAnyOf([3, 6])
-      assert(4).isNotEqualToAnyOf(['4'])
-    })
-    itShouldThrowWhenTheValue('is not strictly not equal (i.e. !==) to any of expected', function () {
-      const obj = { a: 1 }
-      throws(() => assert(true).isNotEqualToAnyOf([true]))
-      throws(() => assert(obj).isNotEqualToAnyOf([null, obj]))
-    })
-  })
-
-  describe('Deep Equality', function () {
-    const object = { a: 1, b: 'str', c: null, d: { a: 'deep' } }
-    const deepEqualToObject = { a: 1, b: 'str', c: null, d: { a: 'deep' } }
-    const differentObject = { a: 1, b: 'str', c: null, d: { b: 'deep' } }
-    const anotherDifferentObject = { a: 1, b: 'str', c: 5 }
-
-    describe('isDeeplyEqualTo(any): this', function () {
-      itShouldBeChainable(() => assert(object).isDeeplyEqualTo(deepEqualToObject))
-      itShouldNotThrowWhenTheValue('is deep equal to expected', function () {
-        assert(object).isDeeplyEqualTo(deepEqualToObject)
-        assert(null).isDeeplyEqualTo(null)
-        assert(undefined).isDeeplyEqualTo(undefined)
-        assert(3).isDeeplyEqualTo(3)
-        assert({}).isDeeplyEqualTo({})
-        assert([]).isDeeplyEqualTo([])
-        assert([1]).isDeeplyEqualTo([1])
-        assert([1, 3]).isDeeplyEqualTo([1, 3])
-        assert([1, object]).isDeeplyEqualTo([1, deepEqualToObject])
-        assert([1, [1, object]]).isDeeplyEqualTo([1, [1, deepEqualToObject]])
-      })
-      itShouldThrowWhenTheValue('is not deep equal to expected', function () {
-        throws(() => assert(object).isDeeplyEqualTo(differentObject))
-        throws(() => assert(object).isDeeplyEqualTo(anotherDifferentObject))
-        throws(() => assert(object).isDeeplyEqualTo(null))
-        throws(() => assert(null).isDeeplyEqualTo(object))
-        throws(() => assert(4).isDeeplyEqualTo(3))
-        throws(() => assert(undefined).isDeeplyEqualTo(null))
-        throws(() => assert(undefined).isDeeplyEqualTo(0))
-        throws(() => assert([]).isDeeplyEqualTo({}))
-        throws(() => assert([]).isDeeplyEqualTo(undefined))
-        throws(() => assert([]).isDeeplyEqualTo([2]))
-        throws(() => assert([[1, object]]).isDeeplyEqualTo([[1, differentObject]]))
-        throws(() => assert([]).isDeeplyEqualTo({ length: 0 }))
-        throws(() => assert(['banana']).isDeeplyEqualTo([2]))
-        throws(() => assert([1, 3]).isDeeplyEqualTo([3, 1]))
-        throws(() => assert(['4']).isDeeplyEqualTo([4]))
+context('Equality', function () {
+  describe('xassert module', function () {
+    describe('getRef()', function () {
+      it('should return the ref', function () {
+        const value = 4
+        assert(assert(value).getRef()).isEqualTo(value)
       })
     })
-    describe('isNotDeeplyEqualTo(any): this', function () {
-      itShouldBeChainable(() => assert(object).isNotDeeplyEqualTo(differentObject))
-      itShouldNotThrowWhenTheValue('is not deep equal to expected', function () {
-        assert(object).isNotDeeplyEqualTo(differentObject)
+    describe('isEqualTo(expected: any): this', function () {
+      itShouldBeChainable(() => assert(true).isEqualTo(true))
+      itShouldNotThrowWhenTheValue('is strictly equal (i.e. ===) to expected', function () {
+        assert(4).isEqualTo(4)
       })
-      itShouldThrowWhenTheValue('is deep equal to expected', function () {
-        throws(() => assert(object).isNotDeeplyEqualTo(object))
-        throws(() => assert(object).isNotDeeplyEqualTo(deepEqualToObject))
+      itShouldThrowWhenTheValue('is not strictly equal (i.e. ===) to expected', function () {
+        throws(() => assert(4).isEqualTo(5))
+        throws(() => assert(4).isEqualTo('4'))
+        throws(() => assert({ a: 1 }).isEqualTo({ a: 1 }))
+        throws(() => assert([1]).isEqualTo([1]))
+      })
+    })
+    describe('isNotEqualTo(expected: any): this', function () {
+      itShouldBeChainable(() => assert(true).isNotEqualTo(false))
+      itShouldNotThrowWhenTheValue('is strictly not equal (i.e. !==) to expected', function () {
+        assert(4).isNotEqualTo(3)
+        assert(4).isNotEqualTo('4')
+      })
+      itShouldThrowWhenTheValue('is not strictly not equal (i.e. !==) to expected', function () {
+        const obj = { a: 1 }
+        throws(() => assert(true).isNotEqualTo(true))
+        throws(() => assert(obj).isNotEqualTo(obj))
+      })
+    })
+    describe('isEqualToAnyOf(any[]): this', function () {
+      itShouldBeChainable(() => assert(true).isEqualToAnyOf([true]))
+      itShouldNotThrowWhenTheValue('is strictly equal (i.e. ===) to any of expected', function () {
+        assert(4).isEqualToAnyOf([3, 4])
+      })
+      itShouldThrowWhenTheValue('is not strictly equal (i.e. ===) to any of expected', function () {
+        throws(() => assert(4).isEqualToAnyOf([5, 6]))
+        throws(() => assert(4).isEqualToAnyOf(['4']))
+        throws(() => assert({ a: 1 }).isEqualToAnyOf([{ a: 1 }]))
+        throws(() => assert([1]).isEqualToAnyOf([1]))
+      })
+    })
+    describe('isNotEqualToAnyOf(any[]): this', function () {
+      itShouldBeChainable(() => assert(true).isNotEqualToAnyOf([false]))
+      itShouldNotThrowWhenTheValue('is strictly not equal (i.e. !==) to any of expected', function () {
+        assert(4).isNotEqualToAnyOf([3, 6])
+        assert(4).isNotEqualToAnyOf(['4'])
+      })
+      itShouldThrowWhenTheValue('is not strictly not equal (i.e. !==) to any of expected', function () {
+        const obj = { a: 1 }
+        throws(() => assert(true).isNotEqualToAnyOf([true]))
+        throws(() => assert(obj).isNotEqualToAnyOf([null, obj]))
       })
     })
 
-    describe('isDeeplyEqualToAnyOf(any): this', function () {
-      itShouldBeChainable(() => assert(object).isDeeplyEqualToAnyOf([deepEqualToObject, differentObject]))
-      itShouldNotThrowWhenTheValue('is deep equal to any of expected', function () {
-        assert(object).isDeeplyEqualToAnyOf([differentObject, deepEqualToObject])
-      })
-      itShouldThrowWhenTheValue('is not deep equal to any of expected', function () {
-        throws(() => assert(object).isDeeplyEqualToAnyOf([differentObject, anotherDifferentObject]))
-      })
-    })
-    describe('isNotDeeplyEqualToAnyOf(any): this', function () {
-      itShouldBeChainable(() => assert(object).isNotDeeplyEqualToAnyOf([differentObject, anotherDifferentObject]))
-      itShouldNotThrowWhenTheValue('is not deep equal to any of expected', function () {
-        assert(object).isNotDeeplyEqualToAnyOf([differentObject, null])
-      })
-      itShouldThrowWhenTheValue('is deep equal to any of expected', function () {
-        throws(() => assert(object).isNotDeeplyEqualToAnyOf([differentObject, object]))
-      })
-    })
-  })
+    describe('Deep Equality', function () {
+      const object = { a: 1, b: 'str', c: null, d: { a: 'deep' } }
+      const deepEqualToObject = { a: 1, b: 'str', c: null, d: { a: 'deep' } }
+      const differentObject = { a: 1, b: 'str', c: null, d: { b: 'deep' } }
+      const anotherDifferentObject = { a: 1, b: 'str', c: 5 }
 
-  describe('andIt property', function () {
-    it('should be equal to the current instance to allow chaining', function () {
-      assert(1).isNotAString().andIt.isAbove(0)
-      throws(() => assert(1).isANumber().andIt.isAtMost(-2))
-    })
-  })
+      describe('isDeeplyEqualTo(any): this', function () {
+        itShouldBeChainable(() => assert(object).isDeeplyEqualTo(deepEqualToObject))
+        itShouldNotThrowWhenTheValue('is deep equal to expected', function () {
+          assert(object).isDeeplyEqualTo(deepEqualToObject)
+          assert(null).isDeeplyEqualTo(null)
+          assert(undefined).isDeeplyEqualTo(undefined)
+          assert(3).isDeeplyEqualTo(3)
+          assert({}).isDeeplyEqualTo({})
+          assert([]).isDeeplyEqualTo([])
+          assert([1]).isDeeplyEqualTo([1])
+          assert([1, 3]).isDeeplyEqualTo([1, 3])
+          assert([1, object]).isDeeplyEqualTo([1, deepEqualToObject])
+          assert([1, [1, object]]).isDeeplyEqualTo([1, [1, deepEqualToObject]])
+        })
+        itShouldThrowWhenTheValue('is not deep equal to expected', function () {
+          throws(() => assert(object).isDeeplyEqualTo(differentObject))
+          throws(() => assert(object).isDeeplyEqualTo(anotherDifferentObject))
+          throws(() => assert(object).isDeeplyEqualTo(null))
+          throws(() => assert(null).isDeeplyEqualTo(object))
+          throws(() => assert(4).isDeeplyEqualTo(3))
+          throws(() => assert(undefined).isDeeplyEqualTo(null))
+          throws(() => assert(undefined).isDeeplyEqualTo(0))
+          throws(() => assert([]).isDeeplyEqualTo({}))
+          throws(() => assert([]).isDeeplyEqualTo(undefined))
+          throws(() => assert([]).isDeeplyEqualTo([2]))
+          throws(() => assert([[1, object]]).isDeeplyEqualTo([[1, differentObject]]))
+          throws(() => assert([]).isDeeplyEqualTo({ length: 0 }))
+          throws(() => assert(['banana']).isDeeplyEqualTo([2]))
+          throws(() => assert([1, 3]).isDeeplyEqualTo([3, 1]))
+          throws(() => assert(['4']).isDeeplyEqualTo([4]))
+        })
+      })
+      describe('isNotDeeplyEqualTo(any): this', function () {
+        itShouldBeChainable(() => assert(object).isNotDeeplyEqualTo(differentObject))
+        itShouldNotThrowWhenTheValue('is not deep equal to expected', function () {
+          assert(object).isNotDeeplyEqualTo(differentObject)
+        })
+        itShouldThrowWhenTheValue('is deep equal to expected', function () {
+          throws(() => assert(object).isNotDeeplyEqualTo(object))
+          throws(() => assert(object).isNotDeeplyEqualTo(deepEqualToObject))
+        })
+      })
 
-  describe('isNull()', function () {
-    itShouldBeChainable(() => assert(null).isNull())
-    itShouldNotThrowWhenTheValue('is null', function () {
-      assert(null).isNull()
+      describe('isDeeplyEqualToAnyOf(any): this', function () {
+        itShouldBeChainable(() => assert(object).isDeeplyEqualToAnyOf([deepEqualToObject, differentObject]))
+        itShouldNotThrowWhenTheValue('is deep equal to any of expected', function () {
+          assert(object).isDeeplyEqualToAnyOf([differentObject, deepEqualToObject])
+        })
+        itShouldThrowWhenTheValue('is not deep equal to any of expected', function () {
+          throws(() => assert(object).isDeeplyEqualToAnyOf([differentObject, anotherDifferentObject]))
+        })
+      })
+      describe('isNotDeeplyEqualToAnyOf(any): this', function () {
+        itShouldBeChainable(() => assert(object).isNotDeeplyEqualToAnyOf([differentObject, anotherDifferentObject]))
+        itShouldNotThrowWhenTheValue('is not deep equal to any of expected', function () {
+          assert(object).isNotDeeplyEqualToAnyOf([differentObject, null])
+        })
+        itShouldThrowWhenTheValue('is deep equal to any of expected', function () {
+          throws(() => assert(object).isNotDeeplyEqualToAnyOf([differentObject, object]))
+        })
+      })
     })
-    itShouldThrowWhenTheValue('is not null', function () {
-      throws(() => assert('apple').isNull())
-    })
-  })
-  describe('isNotNull()', function () {
-    itShouldBeChainable(() => assert(1).isNotNull())
-    itShouldNotThrowWhenTheValue('is not null', function () {
-      assert('banana').isNotNull()
-    })
-    itShouldThrowWhenTheValue('is null', function () {
-      throws(() => assert(null).isNotNull())
-    })
-  })
 
-  describe('isUndefined()', function () {
-    itShouldBeChainable(() => assert(undefined).isUndefined())
-    itShouldNotThrowWhenTheValue('is undefined', function () {
-      assert(undefined).isUndefined()
+    describe('andIt property', function () {
+      it('should be equal to the current instance to allow chaining', function () {
+        assert(1).isNotAString().andIt.isAbove(0)
+        throws(() => assert(1).isANumber().andIt.isAtMost(-2))
+      })
     })
-    itShouldThrowWhenTheValue('is not undefined', function () {
-      throws(() => assert('apple').isUndefined())
-    })
-  })
-  describe('isNotUndefined', function () {
-    itShouldBeChainable(() => assert(1).isNotUndefined())
-    itShouldNotThrowWhenTheValue('is not undefined', function () {
-      assert('banana').isNotUndefined()
-    })
-    itShouldThrowWhenTheValue('is undefined', function () {
-      throws(() => assert(undefined).isNotUndefined())
-    })
-  })
 
-  describe('isNaN()', function () {
-    itShouldBeChainable(() => assert(NaN).isNaN())
-    itShouldNotThrowWhenTheValue('is NaN', function () {
-      assert(NaN).isNaN()
+    describe('isNull()', function () {
+      itShouldBeChainable(() => assert(null).isNull())
+      itShouldNotThrowWhenTheValue('is null', function () {
+        assert(null).isNull()
+      })
+      itShouldThrowWhenTheValue('is not null', function () {
+        throws(() => assert('apple').isNull())
+      })
     })
-    itShouldThrowWhenTheValue('is not NaN', function () {
-      throws(() => assert(1).isNaN())
+    describe('isNotNull()', function () {
+      itShouldBeChainable(() => assert(1).isNotNull())
+      itShouldNotThrowWhenTheValue('is not null', function () {
+        assert('banana').isNotNull()
+      })
+      itShouldThrowWhenTheValue('is null', function () {
+        throws(() => assert(null).isNotNull())
+      })
     })
-  })
-  describe('isNotNaN', function () {
-    itShouldBeChainable(() => assert(1).isNotNaN())
-    itShouldNotThrowWhenTheValue('is not NaN', function () {
-      assert(1).isNotNaN()
+
+    describe('isUndefined()', function () {
+      itShouldBeChainable(() => assert(undefined).isUndefined())
+      itShouldNotThrowWhenTheValue('is undefined', function () {
+        assert(undefined).isUndefined()
+      })
+      itShouldThrowWhenTheValue('is not undefined', function () {
+        throws(() => assert('apple').isUndefined())
+      })
     })
-    itShouldThrowWhenTheValue('is NaN', function () {
-      throws(() => assert(NaN).isNotNaN())
+    describe('isNotUndefined', function () {
+      itShouldBeChainable(() => assert(1).isNotUndefined())
+      itShouldNotThrowWhenTheValue('is not undefined', function () {
+        assert('banana').isNotUndefined()
+      })
+      itShouldThrowWhenTheValue('is undefined', function () {
+        throws(() => assert(undefined).isNotUndefined())
+      })
+    })
+
+    describe('isNaN()', function () {
+      itShouldBeChainable(() => assert(NaN).isNaN())
+      itShouldNotThrowWhenTheValue('is NaN', function () {
+        assert(NaN).isNaN()
+      })
+      itShouldThrowWhenTheValue('is not NaN', function () {
+        throws(() => assert(1).isNaN())
+      })
+    })
+    describe('isNotNaN', function () {
+      itShouldBeChainable(() => assert(1).isNotNaN())
+      itShouldNotThrowWhenTheValue('is not NaN', function () {
+        assert(1).isNotNaN()
+      })
+      itShouldThrowWhenTheValue('is NaN', function () {
+        throws(() => assert(NaN).isNotNaN())
+      })
+    })
+    describe('isTrue()', function () {
+      itShouldBeChainable(() => assert(true).isTrue())
+      itShouldNotThrowWhenTheValue('is strictly true', function () {
+        assert(true).isTrue()
+      })
+      itShouldThrowWhenTheValue('is not strictly true', function () {
+        throws(() => assert(1).isTrue())
+      })
+    })
+    describe('isFalse()', function () {
+      itShouldBeChainable(() => assert(false).isFalse())
+      itShouldNotThrowWhenTheValue('is strictly false', function () {
+        assert(false).isFalse()
+      })
+      itShouldThrowWhenTheValue('is strictly false', function () {
+        throws(() => assert('').isFalse())
+      })
+    })
+    describe('isTruthy()', function () {
+      itShouldBeChainable(() => assert(true).isTruthy())
+      itShouldNotThrowWhenTheValue('is truthy', function () {
+        assert(true).isTruthy()
+        assert(1).isTruthy()
+        assert('banana').isTruthy()
+      })
+      itShouldThrowWhenTheValue('is not truthy', function () {
+        throws(() => assert('').isTruthy())
+        throws(() => assert(false).isTruthy())
+        throws(() => assert(0).isTruthy())
+        throws(() => assert(null).isTruthy())
+        throws(() => assert(undefined).isTruthy())
+      })
+    })
+    describe('isFalsy()', function () {
+      itShouldBeChainable(() => assert(false).isFalsy())
+      itShouldNotThrowWhenTheValue('is falsy', function () {
+        assert('').isFalsy()
+        assert(false).isFalsy()
+        assert(0).isFalsy()
+        assert(null).isFalsy()
+        assert(undefined).isFalsy()
+      })
+      itShouldThrowWhenTheValue('is falsy', function () {
+        throws(() => assert(true).isFalsy())
+        throws(() => assert(1).isFalsy())
+        throws(() => assert('banana').isFalsy())
+      })
     })
   })
 
@@ -509,8 +558,8 @@ describe('xassert module', function () {
         }
         throw new Error(fn + ' should throw an exception')
       }
-      class SomeError extends Error {}
-      class AnotherError extends Error {}
+      class SomeError extends Error { }
+      class AnotherError extends Error { }
 
       itShouldBeChainable(() => assert(() => { throw new Error() }).throws())
       itShouldNotThrowWhen('the actual function throws an exception', function () {
@@ -521,7 +570,7 @@ describe('xassert module', function () {
           .throws(it => it.hasProperty('message', it => it.isEqualTo('ok')))
       })
       itShouldThrowWhen('the actual function does not throw any exceptions', function () {
-        testException(() => assert(() => {}).throws())
+        testException(() => assert(() => { }).throws())
         testException(() => assert(() => { throw new Error() }).throwsA(SomeError))
         testException(() => assert(() => { throw new Error() }).throwsAn(AnotherError))
         testException(() => assert(() => { throw new Error('ok') })
