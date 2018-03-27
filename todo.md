@@ -22,3 +22,5 @@
 * Create helper method to create custom assertions (e.g.: `matcher(it => it.isAString()`)
 * assert.fail()
 * add travis
+* add keywords to the package
+* document fire as protected or public and add example in readme 
