@@ -2,7 +2,6 @@
 
 * New methods
   * includes
-  * regexp
   * isTrue(), isFalse(), isFalsy(), isTruthy()
   * is alias of isDeepEquals
   * isFulfilledWith
@@ -19,4 +18,4 @@
 * Every should have a message and capture the exception?
 * test that isFulfilled return always the value
 * Create helper method to create custom assertions (e.g.: `matcher(it => it.isAString()`)
-* document fire as protected or public and add example in readme 
+* document fire as protected or public and add example in readme

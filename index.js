@@ -864,6 +864,23 @@ class Assertion {
     return this.throwsA(classRef)
   }
 
+  /**
+   * Asserts that the actual value matches the given regular expression.
+   * Alias of {@link module:xassert.Assertion#throwsA}
+   * @example
+   * assert(() => throw new Error()).throwsAn(Error) // Success
+   * assert(() => throw new Error()).throwsAn(InvalidFormat) // Fails
+   * @param {RegExp} [re] - regular expression
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value does not match the given regular expression
+   * @return {this} chainable method
+   */
+  matches (re, message = '{name} did not match the given regular expression: {regexp}') {
+    if (!re.test(this.ref)) this.fire(processMessage(message, { regexp: re }))
+    return this
+  }
+
   satisfies (cb) {
     if (typeof cb !== 'function') throw new Error('satisfies requires a callback function')
     const result = cb(this.ref)

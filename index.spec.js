@@ -584,6 +584,17 @@ describe('xassert module', function () {
       )
     })
   })
+  describe('matches()', function () {
+    itShouldBeChainable(() => assert('abc').matches(/^abc$/))
+    itShouldNotThrowWhenTheValue('matches the given regular expression', function () {
+      assert('abc').matches(/^abc$/)
+      assert(1).matches(/^1$/)
+    })
+    itShouldThrowWhenTheValue('does not match the given regular expression', function () {
+      throws(() => assert('abce').matches(/^abc$/))
+      throws(() => assert(null).matches(/^abc$/))
+    })
+  })
   describe('fail()', function () {
     itShouldThrowWhen('it is call', function () {
       throws(() => assert.fail('You shall not pass!'))
