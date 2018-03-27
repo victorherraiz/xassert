@@ -875,9 +875,6 @@ class Assertion {
 /**
  * Extensible assertions.
  * @module xassert
- * @example
- * const assert = require('xassert')
- * assert(4).isANumber()
  */
 
 /**
@@ -886,9 +883,23 @@ class Assertion {
  * @param {*} ref - actual value, promise or function
  * @param {string} [name] - alias for the actual value
  * @returns {Assertion} new assertion instance
+ * @example
+ * const assert = require('xassert')
+ * assert(4).isANumber()
  */
 function assert (ref, name) {
   return new Assertion(ref, name)
+}
+
+/**
+ * @param {string} message - message for the {@link AssertionError} constructor
+ * @returns {void}
+ * @example
+ * const assert = require('xassert')
+ * assert.fail('Ops!') // This line will throw an AssertionError
+ */
+assert.fail = function fail (message) {
+  throw new AssertionError(message)
 }
 
 assert.Assertion = Assertion

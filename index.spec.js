@@ -36,7 +36,7 @@ function itShouldBeChainable (fn) {
   })
 }
 
-describe('Assertions', function () {
+describe('xassert module', function () {
   describe('getRef()', function () {
     it('should return the ref', function () {
       const value = 4
@@ -582,6 +582,11 @@ describe('Assertions', function () {
           .isEqualTo('actual value own property colors at index 2 is not a string')
         )
       )
+    })
+  })
+  describe('fail()', function () {
+    itShouldThrowWhen('it is call', function () {
+      throws(() => assert.fail('You shall not pass!'))
     })
   })
 })
