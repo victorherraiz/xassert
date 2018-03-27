@@ -43,6 +43,17 @@ context('Equality', function () {
         assert(assert(value).getRef()).isEqualTo(value)
       })
     })
+
+    describe('named()', function () {
+      it('should return a new Assertion with the new name', function () {
+        const originalAssertion = assert(1)
+        const newAssertion = originalAssertion.named('one')
+        assert(originalAssertion.getName()).isEqualTo('actual value')
+        assert(newAssertion.getName()).isEqualTo('one')
+        assert(originalAssertion).isNotEqualTo(newAssertion)
+      })
+    })
+
     describe('isEqualTo(expected: any): this', function () {
       itShouldBeChainable(() => assert(true).isEqualTo(true))
       itShouldNotThrowWhenTheValue('is strictly equal (i.e. ===) to expected', function () {
@@ -130,6 +141,17 @@ context('Equality', function () {
           throws(() => assert(['4']).isDeeplyEqualTo([4]))
         })
       })
+
+      describe('is(any): this', function () {
+        itShouldBeChainable(() => assert(object).is(deepEqualToObject))
+        itShouldNotThrowWhenTheValue('is deep equal to expected', function () {
+          assert(object).is(deepEqualToObject)
+        })
+        itShouldThrowWhenTheValue('is not deep equal to expected', function () {
+          throws(() => assert(object).is(differentObject))
+        })
+      })
+
       describe('isNotDeeplyEqualTo(any): this', function () {
         itShouldBeChainable(() => assert(object).isNotDeeplyEqualTo(differentObject))
         itShouldNotThrowWhenTheValue('is not deep equal to expected', function () {
@@ -468,6 +490,7 @@ context('Equality', function () {
       itShouldThrowWhen('not any item pass the following assertions', function () {
         throws(() => assert(array1).some(it => it.isEqualTo(8)))
         throws(() => assert(array1).some(it => it.isEqualTo(8)))
+        assert(() => assert(array1).some(it => it.isAnApple(8))).throwsAn(Error)
       })
     })
     describe('hasLength()', function () {
@@ -500,6 +523,7 @@ context('Equality', function () {
     })
     itShouldThrowWhenTheValue('does not satisfy the following function (i.e. it returns false)', function () {
       throws(() => assert(value).satisfies(value => value === 'lemon'))
+      assert(() => assert(value).satisfies()).throwsAn(Error)
     })
   })
 
@@ -549,15 +573,24 @@ context('Equality', function () {
       throws(() => assert(apple).isABanana())
     })
   })
-  context('Functions ', function () {
+  context('Functions', function () {
     describe('throws()', function () {
       function testException (fn) {
         try { fn() } catch (e) {
-          if (!(e instanceof AssertionError)) throw new Error(fn + ' should throw an AssertionError')
+          if (!(e instanceof AssertionError)) throw e
           return
         }
         throw new Error(fn + ' should throw an exception')
       }
+      describe('meta - testException()', function () {
+        itShouldThrowWhen('no exceptions has been thrown', function () {
+          assert(() => testException(() => {})).throwsAn(Error)
+        })
+        itShouldThrowWhen('is not an AssertionError', function () {
+          assert(() => testException(() => { throw new Error('something') })).throwsAn(Error)
+        })
+      })
+
       class SomeError extends Error { }
       class AnotherError extends Error { }
 
@@ -586,6 +619,12 @@ context('Equality', function () {
         (error) => assert(error).isInstanceOf(AssertionError)
       )
     }
+
+    describe('meta - testRejection()', function () {
+      itShouldThrowWhen('no rejection happens', function () {
+        return assert(testRejection(Promise.resolve())).isRejected()
+      })
+    })
 
     describe('isFulfilled()', function () {
       itShouldNotThrowWhen('the promise is fulfilled', function () {

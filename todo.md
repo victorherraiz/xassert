@@ -2,8 +2,6 @@
 
 * New methods
   * includes
-  * isTrue(), isFalse(), isFalsy(), isTruthy()
-  * is alias of isDeepEquals
   * isFulfilledWith
   * isNotDeepEqual
   * isRejectedWith

@@ -911,7 +911,7 @@ class Assertion {
   throwsA (classRef, message = '{name} did not throw a {class}') {
     return this.throws(it => it.isInstanceOf(
       classRef,
-      processMessage(message, { class: classRef.constructor.name })
+      processMessage(message, { class: classRef.name })
     ))
   }
 
@@ -928,7 +928,7 @@ class Assertion {
    * @return {this} chainable method
    */
   throwsAn (classRef, message = '{name} did not throw an {class}') {
-    return this.throwsA(classRef)
+    return this.throwsA(classRef, message)
   }
 
   /**
@@ -948,9 +948,9 @@ class Assertion {
     return this
   }
 
-  satisfies (cb) {
-    if (typeof cb !== 'function') throw new Error('satisfies requires a callback function')
-    const result = cb(this.ref)
+  satisfies (test) {
+    requireTestFunction(test, 'satisfies requires a test function')
+    const result = test(this.ref)
     if (!result) this.fire('It does not satisfy')
     return this
   }
