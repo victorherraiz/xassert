@@ -891,9 +891,7 @@ function assert (ref, name) {
   return new Assertion(ref, name)
 }
 
-/** @type Assertion */
 assert.Assertion = Assertion
-/** @type AssertionError */
 assert.AssertionError = AssertionError
 
 module.exports = assert
