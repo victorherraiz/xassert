@@ -15,7 +15,7 @@
     "test:coverage": "nyc --reporter=html npm run test:unit",
     "test:unit": "mocha index.spec.js",
     "test:examples": "mocha examples/mocha.spec.js",
-    "test": "npm run lint && npm run test:examples && nyc npm run test:unit",
+    "test": "npm run lint && npm run test:examples && nyc --reporter=lcovonly npm run test:unit",
     "lint": "standard *.js",
     "lint:fix": "standard *.js --fix --verbose",
     "docs": "rm -rf ./docs && jsdoc -c ./jsdoc.json"
