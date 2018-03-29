@@ -70,7 +70,7 @@ class Assertion {
    * Do no use it directly. Use the [module function]{@link module:xassert}
    * @param {*} ref - actual value, promise or function
    * @param {string} [name] - name of the field that could be used in the error messages
-   * @param {ValueAssertion} [parent] - parent assertion
+   * @param {Assertion} [parent] - parent assertion
    */
   constructor (ref, name, parent) {
     this.ref = ref
@@ -622,7 +622,7 @@ class Assertion {
    */
   hasProperty (name, test, message = '{name} does not contain the property {property}') {
     if (!(this.ref && name in this.ref)) this.fire(processMessage(message, { property: name }))
-    if (typeof test === 'function') test(new Assertion(this.ref[name], 'property ' + name, this))
+    if (typeof test === 'function') test(new Assertion(this.ref[name], name + ' property', this))
     return this
   }
 
@@ -657,7 +657,7 @@ class Assertion {
     if (!(this.ref instanceof Object && this.ref.hasOwnProperty(name))) {
       this.fire(processMessage(message, { property: name }))
     }
-    if (typeof test === 'function') test(new Assertion(this.ref[name], 'own property ' + name, this))
+    if (typeof test === 'function') test(new Assertion(this.ref[name], name + ' own property', this))
     return this
   }
 
@@ -839,7 +839,7 @@ class Assertion {
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the promise is rejected and the test fails
-   * @return {Promise<any>} resolved promise with the value
+   * @return {Promise<*>} resolved promise with the value
    */
   isFulfilled (test, message = '{name} has been rejected') {
     return this.ref.then(
@@ -860,13 +860,13 @@ class Assertion {
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the promise is fulfilled and the test fails
-   * @return {Promise<any>} resolved promise with the error
+   * @return {Promise<*>} resolved promise with the error
    */
   isRejected (test, message = '{name} has been fulfilled') {
     return this.ref.then(
       value => this.fire(message),
       error => {
-        if (typeof test === 'function') test(new Assertion(error))
+        if (typeof test === 'function') test(new Assertion(error, 'error'))
         return error
       }
     )
@@ -902,7 +902,7 @@ class Assertion {
    * @example
    * assert(() => throw new NotFoundError()).throwsA(NotFoundError) // Success
    * assert(() => throw new ServerError()).throwsA(NotFoundError) // Fails
-   * @param {class} [classRef] - class reference
+   * @param {function} [classRef] - class reference
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the provided function does not throw the given exception
@@ -921,7 +921,7 @@ class Assertion {
    * @example
    * assert(() => throw new Error()).throwsAn(Error) // Success
    * assert(() => throw new Error()).throwsAn(InvalidFormat) // Fails
-   * @param {class} [classRef] - class reference
+   * @param {function} [classRef] - class reference
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the provided function does not throw the given exception
@@ -984,6 +984,25 @@ function assert (ref, name) {
  */
 assert.fail = function fail (message) {
   throw new AssertionError(message)
+}
+
+/**
+ * Support function to easily create tests. If the editor supports
+ * JSDOC comments it will assist you.
+ * @param {assertionCallback} test - test
+ * @returns {Assertion} return the same test
+ * @example
+ * const isABanana = assert.fn(it => it.isEqualTo('BANANA'))
+ * // same as "const isABanana = it => it.isEqualTo('BANANA')"
+ * const object = { a:'BANANA', b:'APPLE' }
+ * isABanana(assert('BANANA'))
+ * assert(object)
+ *   .hasProperty('a', isABanana) // Passes
+ *   .hasProperty('b', isABanana) // Fails
+ */
+assert.fn = function callback (test) {
+  requireTestFunction(test)
+  return test
 }
 
 assert.Assertion = Assertion

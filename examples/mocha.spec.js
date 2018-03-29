@@ -9,11 +9,14 @@ describe('Mocha Examples', function () {
     assert(3).isANumber().andIt.isNotEqualTo(4)
     assert([3, 4]).isDeeplyEqualTo([3, 4])
     assert(7).isEqualToAnyOf([4, 7])
+    assert({ a: 2, b: [3, 6] })
+      .hasProperty('a', it => it.isANumber())
+      .hasProperty('b', it => it.isAnArray().every(it => it.isANumber()))
   })
 
   it('should be a more complex example', function () {
     // Reusable assertions on properties
-    const isANumber = it => it.isANumber()
+    const isANumber = assert.fn(it => it.isANumber())
     const areNumbers = it => it.every(isANumber)
     const isString = it => it.isAString()
     const areStrings = it => it.every(isString)
