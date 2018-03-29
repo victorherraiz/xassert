@@ -1,6 +1,6 @@
 {
   "name": "xassert",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "xassert is just another assertion library",
   "keywords": [
     "assertion",
