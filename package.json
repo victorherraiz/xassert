@@ -16,8 +16,8 @@
     "test:unit": "mocha index.spec.js",
     "test:examples": "mocha examples/mocha.spec.js",
     "test": "npm run lint && npm run test:examples && nyc npm run test:unit",
-    "lint": "standard *.js",
-    "lint:fix": "standard *.js --fix --verbose",
+    "lint": "standard *.js examples/*.js",
+    "lint:fix": "npm run lint -- --fix --verbose",
     "docs": "rm -rf ./docs && jsdoc -c ./jsdoc.json"
   },
   "repository": {

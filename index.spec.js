@@ -40,10 +40,10 @@ function itShouldBeChainable (fn) {
 }
 
 describe('xassert module', function () {
-  describe('getRef()', function () {
+  describe('getActual()', function () {
     it('should return the ref', function () {
       const value = 4
-      assert(assert(value).getRef()).isEqualTo(value)
+      assert(assert(value).getActual()).isEqualTo(value)
     })
   })
 
@@ -569,12 +569,13 @@ describe('xassert module', function () {
     it('should be able to accept extensions', function () {
       const banana = 'I am a banana!'
       const apple = 'I am an apple'
+      // Add a new method
       Assertion.prototype.isABanana = function isABanana () {
-        if (this.ref !== banana) throw new AssertionError('It not a banana')
+        if (this.actual !== banana) throw this.fire('{name} is not a banana', banana)
         return this
       }
       assert(banana).isABanana()
-      throws(() => assert(apple).isABanana())
+      throws(() => assert(apple).isABanana(), 'actual value is not a banana')
     })
   })
   context('Functions', function () {

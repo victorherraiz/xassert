@@ -48,7 +48,7 @@ class AssertionError extends Error {
   /**
    * @param {string} message - Error message
    * @param {*} [actual] - Actual value
-   * @param {*} [expected] - Actual value
+   * @param {*} [expected] - Expected value
    */
   constructor (message, actual, expected) {
     super(message)
@@ -68,23 +68,23 @@ class AssertionError extends Error {
 class Assertion {
   /**
    * Do no use it directly. Use the [module function]{@link module:xassert}
-   * @param {*} ref - actual value, promise or function
+   * @param {*} actual - actual value, promise or function
    * @param {string} [name] - name of the field that could be used in the error messages
    * @param {Assertion} [parent] - parent assertion
    */
-  constructor (ref, name, parent) {
-    this.ref = ref
+  constructor (actual, name, parent) {
+    this.actual = actual
     this.name = name
     this.parent = parent
   }
 
   /**
    * @example
-   * console.log(assert('orange').isAString().getRef()) // prints 'orange'
+   * console.log(assert('orange').isAString().getActual()) // prints 'orange'
    * @returns {*} current value
    */
-  getRef () {
-    return this.ref
+  getActual () {
+    return this.actual
   }
 
   /**
@@ -95,8 +95,8 @@ class Assertion {
    */
   getName () {
     if (this.name) return this.name
-    if (isAPromise(this.ref)) return 'promise'
-    if (typeof this.ref === 'function') return 'function'
+    if (isAPromise(this.actual)) return 'promise'
+    if (typeof this.actual === 'function') return 'function'
     return 'actual value'
   }
 
@@ -122,7 +122,7 @@ class Assertion {
    * @returns {Assertion} new ValueAssertion with the same value and a new name
    */
   named (name) {
-    return new Assertion(this.ref, name)
+    return new Assertion(this.actual, name)
   }
 
   /**
@@ -139,7 +139,7 @@ class Assertion {
   fire (message, expected) {
     throw new AssertionError(
       processMessage(message, { name: this.getFullName() }),
-      this.ref, expected)
+      this.actual, expected)
   }
 
   /**
@@ -154,7 +154,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isEqualTo (expected, message = '{name} is different than expected value') {
-    if (expected !== this.ref) this.fire(message, expected)
+    if (expected !== this.actual) this.fire(message, expected)
     return this
   }
 
@@ -170,7 +170,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isEqualToAnyOf (expected, message = '{name} is different than any expected value') {
-    if (expected.every(arg => arg !== this.ref)) this.fire(message)
+    if (expected.every(arg => arg !== this.actual)) this.fire(message)
     return this
   }
 
@@ -186,7 +186,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotEqualTo (expected, message = '{name} is equal to expected value') {
-    if (expected === this.ref) this.fire(message)
+    if (expected === this.actual) this.fire(message)
     return this
   }
 
@@ -202,7 +202,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotEqualToAnyOf (expected, message = '{name} is equal to some expected value') {
-    if (expected.some(arg => arg === this.ref)) this.fire(message)
+    if (expected.some(arg => arg === this.actual)) this.fire(message)
     return this
   }
 
@@ -219,7 +219,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isDeeplyEqualTo (expected, message = '{name} is not deeply equal to expected value') {
-    if (!deepEquals(this.ref, expected)) this.fire(message, expected)
+    if (!deepEquals(this.actual, expected)) this.fire(message, expected)
     return this
   }
 
@@ -249,7 +249,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotDeeplyEqualTo (expected, message = 'actual is deeply equal to expected') {
-    if (deepEquals(this.ref, expected)) this.fire(message, expected)
+    if (deepEquals(this.actual, expected)) this.fire(message, expected)
     return this
   }
 
@@ -266,7 +266,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isDeeplyEqualToAnyOf (expected, message = '{name} is different than any of the expected values') {
-    if (expected.every(arg => !deepEquals(this.ref, arg))) {
+    if (expected.every(arg => !deepEquals(this.actual, arg))) {
       this.fire(message)
     }
     return this
@@ -285,7 +285,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotDeeplyEqualToAnyOf (expected, message = '{name} is equal one of non expected values') {
-    if (expected.some(arg => deepEquals(this.ref, arg))) {
+    if (expected.some(arg => deepEquals(this.actual, arg))) {
       this.fire(message)
     }
     return this
@@ -304,7 +304,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNull (message = '{name} is not null') {
-    if (this.ref !== null) this.fire(message, null)
+    if (this.actual !== null) this.fire(message, null)
     return this
   }
 
@@ -320,7 +320,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isTrue (message = '{name} is not strictly true') {
-    if (this.ref !== true) this.fire(message, true)
+    if (this.actual !== true) this.fire(message, true)
     return this
   }
 
@@ -336,7 +336,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isFalse (message = '{name} is not strictly false') {
-    if (this.ref !== false) this.fire(message, false)
+    if (this.actual !== false) this.fire(message, false)
     return this
   }
 
@@ -353,7 +353,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isTruthy (message = '{name} is not truthy') {
-    if (!this.ref) this.fire(message)
+    if (!this.actual) this.fire(message)
     return this
   }
 
@@ -371,7 +371,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isFalsy (message = '{name} is not falsy') {
-    if (this.ref) this.fire(message)
+    if (this.actual) this.fire(message)
     return this
   }
 
@@ -386,7 +386,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotNull (message = '{name} is null') {
-    if (this.ref === null) this.fire(message)
+    if (this.actual === null) this.fire(message)
     return this
   }
 
@@ -401,7 +401,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isUndefined (message = '{name} is not undefined') {
-    if (typeof this.ref !== 'undefined') this.fire(message, undefined)
+    if (typeof this.actual !== 'undefined') this.fire(message, undefined)
     return this
   }
 
@@ -416,7 +416,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotUndefined (message = '{name} is undefined') {
-    if (typeof this.ref === 'undefined') this.fire(message)
+    if (typeof this.actual === 'undefined') this.fire(message)
     return this
   }
 
@@ -431,7 +431,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNaN (message = '{name} is not NaN') {
-    if (!isNaN(this.ref)) this.fire(message, NaN)
+    if (!isNaN(this.actual)) this.fire(message, NaN)
     return this
   }
 
@@ -446,7 +446,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotNaN (message = '{name} is NaN') {
-    if (isNaN(this.ref)) this.fire(message)
+    if (isNaN(this.actual)) this.fire(message)
     return this
   }
 
@@ -461,7 +461,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isAPromise (message = '{name} is not a promise') {
-    if (!isAPromise(this.ref)) this.fire(message)
+    if (!isAPromise(this.actual)) this.fire(message)
     return this
   }
 
@@ -476,7 +476,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotAPromise (message = '{name} is a promise') {
-    if (isAPromise(this.ref)) this.fire(message)
+    if (isAPromise(this.actual)) this.fire(message)
     return this
   }
 
@@ -491,7 +491,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isANumber (message = '{name} is not a number') {
-    if (typeof this.ref !== 'number') this.fire(message)
+    if (typeof this.actual !== 'number') this.fire(message)
     return this
   }
 
@@ -506,7 +506,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotANumber (message = '{name} is a number') {
-    if (typeof this.ref === 'number') this.fire(message)
+    if (typeof this.actual === 'number') this.fire(message)
     return this
   }
 
@@ -521,7 +521,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isAString (message = '{name} is not a string') {
-    if (typeof this.ref !== 'string') this.fire(message)
+    if (typeof this.actual !== 'string') this.fire(message)
     return this
   }
 
@@ -536,7 +536,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotAString (message = '{name} is a string') {
-    if (typeof this.ref === 'string') this.fire(message)
+    if (typeof this.actual === 'string') this.fire(message)
     return this
   }
 
@@ -551,7 +551,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isAnArray (message = '{name} is not an array') {
-    if (!Array.isArray(this.ref)) this.fire(message, this.ref)
+    if (!Array.isArray(this.actual)) this.fire(message, this.actual)
     return this
   }
 
@@ -566,7 +566,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotAnArray (message = '{name} is an array') {
-    if (Array.isArray(this.ref)) this.fire(message, this.ref)
+    if (Array.isArray(this.actual)) this.fire(message, this.actual)
     return this
   }
 
@@ -581,7 +581,7 @@ class Assertion {
    */
   every (test) {
     requireTestFunction(test)
-    this.ref.forEach((it, i) => test(new Assertion(it, 'at index ' + i, this)))
+    this.actual.forEach((it, i) => test(new Assertion(it, 'at index ' + i, this)))
     return this
   }
 
@@ -597,7 +597,7 @@ class Assertion {
    */
   some (test, message = '{name} does not contain any item that passes any test') {
     requireTestFunction(test)
-    const result = this.ref.some(it => {
+    const result = this.actual.some(it => {
       try { test(new Assertion(it)) } catch (error) {
         if (error instanceof AssertionError) return false
         throw error
@@ -621,8 +621,8 @@ class Assertion {
    * @return {this} chainable method
    */
   hasProperty (name, test, message = '{name} does not contain the property {property}') {
-    if (!(this.ref && name in this.ref)) this.fire(processMessage(message, { property: name }))
-    if (typeof test === 'function') test(new Assertion(this.ref[name], name + ' property', this))
+    if (!(this.actual && name in this.actual)) this.fire(processMessage(message, { property: name }))
+    if (typeof test === 'function') test(new Assertion(this.actual[name], name + ' property', this))
     return this
   }
 
@@ -637,7 +637,7 @@ class Assertion {
    * @return {this} chainable method
    */
   doesNotHaveProperty (name, message = '{name} contains the property {property}') {
-    if (this.ref && name in this.ref) this.fire(processMessage(message, { property: name }))
+    if (this.actual && name in this.actual) this.fire(processMessage(message, { property: name }))
     return this
   }
 
@@ -654,10 +654,10 @@ class Assertion {
    * @return {this} chainable method
    */
   hasOwnProperty (name, test, message = '{name} does not contain the own property {property}') {
-    if (!(this.ref instanceof Object && this.ref.hasOwnProperty(name))) {
+    if (!(this.actual instanceof Object && this.actual.hasOwnProperty(name))) {
       this.fire(processMessage(message, { property: name }))
     }
-    if (typeof test === 'function') test(new Assertion(this.ref[name], name + ' own property', this))
+    if (typeof test === 'function') test(new Assertion(this.actual[name], name + ' own property', this))
     return this
   }
 
@@ -672,7 +672,7 @@ class Assertion {
    * @return {this} chainable method
    */
   doesNotHaveOwnProperty (name, message = '{name} contains the own property {property}') {
-    if (this.ref instanceof Object && this.ref.hasOwnProperty(name)) {
+    if (this.actual instanceof Object && this.actual.hasOwnProperty(name)) {
       this.fire(processMessage(message, { property: name }))
     }
     return this
@@ -692,7 +692,7 @@ class Assertion {
    * @return {this} chainable method
    */
   hasLength (test, message = '{name} does not have length property') {
-    const ref = this.ref
+    const ref = this.actual
     // Empty strings are falsy
     if (ref === null || ref === undefined || typeof ref.length !== 'number') this.fire(message)
     // 'length' in 'a string' throws an error
@@ -729,7 +729,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isAbove (number, message = '{name} is not above expected value') {
-    if (this.ref <= number) this.fire(message, number)
+    if (this.actual <= number) this.fire(message, number)
     return this
   }
 
@@ -745,7 +745,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isAtLeast (number, message = '{name} is not at least as expected value') {
-    if (this.ref < number) this.fire(message, number)
+    if (this.actual < number) this.fire(message, number)
     return this
   }
 
@@ -761,7 +761,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isBelow (number, message = '{name} is not below expected value') {
-    if (this.ref >= number) this.fire(message, number)
+    if (this.actual >= number) this.fire(message, number)
     return this
   }
 
@@ -777,7 +777,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isAtMost (number, message = '{name} is not at most as expected value') {
-    if (this.ref > number) this.fire(message, number)
+    if (this.actual > number) this.fire(message, number)
     return this
   }
 
@@ -794,7 +794,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isInstanceOf (expected, message = '{name} is not instance of class ' + expected.name) {
-    if (!(this.ref instanceof expected)) this.fire(message, expected)
+    if (!(this.actual instanceof expected)) this.fire(message, expected)
     return this
   }
 
@@ -809,7 +809,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isFrozen (message = '{name} is not frozen') {
-    if (!Object.isFrozen(this.ref)) this.fire(message)
+    if (!Object.isFrozen(this.actual)) this.fire(message)
     return this
   }
 
@@ -824,7 +824,7 @@ class Assertion {
    * @return {this} chainable method
    */
   isNotFrozen (message = '{name} is frozen') {
-    if (Object.isFrozen(this.ref)) this.fire(message)
+    if (Object.isFrozen(this.actual)) this.fire(message)
     return this
   }
 
@@ -842,7 +842,7 @@ class Assertion {
    * @return {Promise<*>} resolved promise with the value
    */
   isFulfilled (test, message = '{name} has been rejected') {
-    return this.ref.then(
+    return this.actual.then(
       value => {
         if (typeof test === 'function') test(new Assertion(value))
         return value
@@ -863,7 +863,7 @@ class Assertion {
    * @return {Promise<*>} resolved promise with the error
    */
   isRejected (test, message = '{name} has been fulfilled') {
-    return this.ref.then(
+    return this.actual.then(
       value => this.fire(message),
       error => {
         if (typeof test === 'function') test(new Assertion(error, 'error'))
@@ -886,7 +886,7 @@ class Assertion {
    */
   throws (test, message = '{name} did not throw') {
     try {
-      this.ref()
+      this.actual()
     } catch (error) {
       if (test) {
         requireTestFunction(test)
@@ -944,13 +944,13 @@ class Assertion {
    * @return {this} chainable method
    */
   matches (re, message = '{name} did not match the given regular expression: {regexp}') {
-    if (!re.test(this.ref)) this.fire(processMessage(message, { regexp: re }))
+    if (!re.test(this.actual)) this.fire(processMessage(message, { regexp: re }))
     return this
   }
 
   satisfies (test) {
     requireTestFunction(test, 'satisfies requires a test function')
-    const result = test(this.ref)
+    const result = test(this.actual)
     if (!result) this.fire('It does not satisfy')
     return this
   }

@@ -2,6 +2,7 @@
 
 ## Current tasks
 
+* Reusable assertions (see examples)
 * includes
 * isFulfilledWith
 * test that isFulfilled return always the value

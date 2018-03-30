@@ -4,7 +4,7 @@
 const assert = require('..')
 
 describe('Mocha Examples', function () {
-  it('should be a simple example', function () {
+  it('should allow simple assertions', function () {
     assert(3).isEqualTo(3)
     assert(3).isANumber().andIt.isNotEqualTo(4)
     assert([3, 4]).isDeeplyEqualTo([3, 4])
@@ -14,12 +14,13 @@ describe('Mocha Examples', function () {
       .hasProperty('b', it => it.isAnArray().every(it => it.isANumber()))
   })
 
-  it('should be a more complex example', function () {
+  it('should allow to define reusable assertion with IDE auto-completion', function () {
     // Reusable assertions on properties
+    // Note that `assert.fn` is only a helper function for auto-completion in some IDE
     const isANumber = assert.fn(it => it.isANumber())
-    const areNumbers = it => it.every(isANumber)
-    const isString = it => it.isAString()
-    const areStrings = it => it.every(isString)
+    const areNumbers = assert.fn(it => it.every(isANumber))
+    const isString = assert.fn(it => it.isAString())
+    const areStrings = assert.fn(it => it.every(isString))
 
     // Assertion on "things"
     const things = { colors: ['red', 'blue', 'yellow'], numbers: [1, 2] }
@@ -27,5 +28,12 @@ describe('Mocha Examples', function () {
       .named('things')
       .hasOwnProperty('numbers', areNumbers)
       .hasOwnProperty('colors', areStrings)
+
+    // Even the whole assertion
+    const areThings = assert.fn(it => it.named('things')
+      .hasOwnProperty('numbers', areNumbers)
+      .hasOwnProperty('colors', areStrings))
+
+    areThings(assert(things))
   })
 })

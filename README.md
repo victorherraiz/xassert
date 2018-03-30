@@ -50,7 +50,7 @@ const banana = 'I am a banana!'
 const apple = 'I am an apple'
 // Add a new method
 Assertion.prototype.isABanana = function isABanana () {
-  if (this.ref !== banana) throw this.fire('{name} is not a banana', banana)
+  if (this.actual !== banana) throw this.fire('{name} is not a banana', banana)
   return this
 }
 
