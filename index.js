@@ -88,6 +88,22 @@ class Assertion {
   }
 
   /**
+   * @private
+   * @deprecated
+   */
+  get ref () {
+    return this.actual
+  }
+
+  /**
+   * @deprecated {@link Assertion#getActual}
+   * @returns {*} actual value
+   */
+  getRef () {
+    return this.actual
+  }
+
+  /**
    * @example
    * console.log(assert('orange').isAString().getName()) // prints 'actual value'
    * console.log(assert('orange', 'fruit').isAString().getName()) // prints 'fruit'

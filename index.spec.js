@@ -47,6 +47,15 @@ describe('xassert module', function () {
     })
   })
 
+  describe('@deprecated', function () {
+    it('should return the ref', function () {
+      const value = 4
+      const assertion = assert(value)
+      assert(assertion.getRef()).isEqualTo(value)
+      assert(assertion).hasProperty('ref', it => it.isEqualTo(value))
+    })
+  })
+
   describe('named()', function () {
     it('should return a new Assertion with the new name', function () {
       const originalAssertion = assert(1)
