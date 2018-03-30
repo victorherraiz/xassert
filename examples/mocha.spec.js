@@ -36,14 +36,20 @@ describe('Mocha Examples', function () {
 
     areThings(assert(things))
   })
-  it('should allow promise assertions', async function () {
+  context('promises', function () {
     const promise = Promise.resolve([{ a: 3 }, { a: 6 }])
-
-    await assert(promise).isFulfilled(it => it.every(it => it.hasProperty('a', it => it.isAtLeast(2).andIt.isAtMost(10))))
+    it('should allow promise assertions with reusable assertions', function () {
+      return assert(promise).isFulfilled(
+        it => it.every(
+          it => it.hasProperty('a',
+            it => it.isAtLeast(2).andIt.isAtMost(10))))
+    })
     // or
-    const isValidA = assert.fn(it => it.isAtLeast(2).andIt.isAtMost(10))
-    const isAThing = assert.fn(it => it.hasProperty('a', isValidA))
-    const areArrayOfThings = assert.fn(it => it.every(isAThing))
-    await assert(promise).isFulfilled(areArrayOfThings)
+    it('should allow promise assertions with reusable assertions', function () {
+      const isValidA = assert.fn(it => it.isAtLeast(2).andIt.isAtMost(10))
+      const isAThing = assert.fn(it => it.hasProperty('a', isValidA))
+      const areArrayOfThings = assert.fn(it => it.every(isAThing))
+      return assert(promise).isFulfilled(areArrayOfThings)
+    })
   })
 })
