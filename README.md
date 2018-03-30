@@ -60,3 +60,28 @@ Assertion.prototype.isABanana = function isABanana () {
 assert(banana).isABanana()
 assert(() => assert(apple).isABanana()).throwsAn(AssertionError)
 ```
+
+## Reusable assertions
+
+```js
+    // Reusable assertions on properties
+    // Note that `assert.fn` is only a helper function for auto-completion in some IDE
+    const isANumber = assert.fn(it => it.isANumber())
+    const areNumbers = assert.fn(it => it.every(isANumber))
+    const isString = assert.fn(it => it.isAString())
+    const areStrings = assert.fn(it => it.every(isString))
+
+    // Assertion on "things"
+    const things = { colors: ['red', 'blue', 'yellow'], numbers: [1, 2] }
+    assert(things)
+      .named('things')
+      .hasOwnProperty('numbers', areNumbers)
+      .hasOwnProperty('colors', areStrings)
+
+    // Even the whole assertion
+    const areThings = assert.fn(it => it.named('things')
+      .hasOwnProperty('numbers', areNumbers)
+      .hasOwnProperty('colors', areStrings))
+
+    areThings(assert(things))
+````
