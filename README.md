@@ -6,10 +6,13 @@ Just another assertion library inspired by [Chai Assertion Library](http://www.c
 [Java Hamcrest](http://hamcrest.org/) with interesting features:
 
 * Extensible
-* No complex property chains (e.g `is.not.equal`)
+* No dependencies
+* No complex property chains (e.g. `is.not.equal`)
 * No property terminators (e.g. `is.true`) that could deliver false positives on a typographic error.
 * Promises support
 * Property assertion chaining
+* Reusable assertions
+* Meaningfully error messages (e.g. 'actual value did not match the given regular expression: /^abc$/')
 
 ## Install
 

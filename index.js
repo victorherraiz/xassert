@@ -226,7 +226,7 @@ class Assertion {
    * Asserts that the actual value is deeply equal to expected value
    *
    * @example
-   * assert({ c: 3 }).isDeeplyEqualTo({ c: 3 }) // Success
+   * assert({ c: 3 }).isDeeplyEqualTo({ c: 3 }) // Passes
    * assert({ c: 3 }).isDeeplyEqualTo('3') // Fail
    * @param {*} expected - expected value
    * @param {string} [message] - error message
@@ -242,7 +242,7 @@ class Assertion {
   /**
    * Alias of {@link module:xassert.Assertion#isDeeplyEqualTo}
    * @example
-   * assert({ c: 3 }).is({ c: 3 }) // Success
+   * assert({ c: 3 }).is({ c: 3 }) // Passes
    * @param {*} expected - expected value
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -257,7 +257,7 @@ class Assertion {
    *
    * @example
    * assert({ c: 3 }).isNotDeeplyEqualTo({ c: 3 }) // Fail
-   * assert({ c: 3 }).isNotDeeplyEqualTo('3') // Success
+   * assert({ c: 3 }).isNotDeeplyEqualTo('3') // Passes
    * @param {*} expected - expected value
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -273,7 +273,7 @@ class Assertion {
    * Asserts that the actual value is deeply equal to any of expected values
    *
    * @example
-   * assert({ c: 3 }).isDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 3 }]) // Success
+   * assert({ c: 3 }).isDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 3 }]) // Passes
    * assert({ c: 3 }).isDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 4 }])') // Fail
    * @param {*} expected - expected value
    * @param {string} [message] - error message
@@ -293,7 +293,7 @@ class Assertion {
    *
    * @example
    * assert({ c: 3 }).isNotDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 3 }]) // Fail
-   * assert({ c: 3 }).isNotDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 4 }])') // Success
+   * assert({ c: 3 }).isNotDeeplyEqualToAnyOf([{ a: 3 } ,{ c: 4 }])') // Passes
    * @param {*} expected - expected value
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -313,7 +313,7 @@ class Assertion {
    * Asserts that the actual value is null
    *
    * @example
-   * assert(null).isNull() // Success
+   * assert(null).isNull() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is not null
@@ -328,7 +328,7 @@ class Assertion {
    * Asserts that the actual value is strictly true
    *
    * @example
-   * assert(true).isTrue() // Success
+   * assert(true).isTrue() // Passes
    * assert('apple').isTrue() // Fail
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -344,7 +344,7 @@ class Assertion {
    * Asserts that the actual value is strictly false
    *
    * @example
-   * assert(false).isFalse() // Success
+   * assert(false).isFalse() // Passes
    * assert('apple').isFalse() // Fail
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -360,8 +360,8 @@ class Assertion {
    * Asserts that the actual value is truthy
    *
    * @example
-   * assert(true).isTruthy() // Success
-   * assert('apple').isTruthy() // Success
+   * assert(true).isTruthy() // Passes
+   * assert('apple').isTruthy() // Passes
    * assert(null).isTruthy() // Fail
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -377,10 +377,10 @@ class Assertion {
    * Asserts that the actual value is falsy
    *
    * @example
-   * assert(false).isFalsy() // Success
-   * assert(undefined).isFalsy() // Success
-   * assert('').isFalsy() // Success
-   * assert('apple').isFalsy() // Success
+   * assert(false).isFalsy() // Passes
+   * assert(undefined).isFalsy() // Passes
+   * assert('').isFalsy() // Passes
+   * assert('apple').isFalsy() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is not falsy
@@ -395,7 +395,7 @@ class Assertion {
    * Asserts that the actual value is not null
    *
    * @example
-   * assert('a').isNotNull() // Success
+   * assert('a').isNotNull() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is not null
@@ -410,7 +410,7 @@ class Assertion {
    * Asserts that the actual value is undefined
    *
    * @example
-   * assert(undefined).isUndefined() // Success
+   * assert(undefined).isUndefined() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is not null
@@ -440,7 +440,7 @@ class Assertion {
    * Asserts that the actual value is NaN
    *
    * @example
-   * assert('j').isNaN() // Success
+   * assert('j').isNaN() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is not NaN
@@ -470,7 +470,7 @@ class Assertion {
    * Asserts that the actual value is a promise
    *
    * @example
-   * assert(Promise.resolve(3)).isAPromise() // Success
+   * assert(Promise.resolve(3)).isAPromise() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is not a promise
@@ -500,7 +500,7 @@ class Assertion {
    * Asserts that the actual value is a number
    *
    * @example
-   * assert(4.3).isANumber() // Success
+   * assert(4.3).isANumber() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is not a number
@@ -530,7 +530,7 @@ class Assertion {
    * Asserts that the actual value is a string
    *
    * @example
-   * assert('banana').isAString() // Success
+   * assert('banana').isAString() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is not a string
@@ -560,7 +560,7 @@ class Assertion {
    * Asserts that the actual value is an array
    *
    * @example
-   * assert([2, 3]).isAnArray() // Success
+   * assert([2, 3]).isAnArray() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is not an array
@@ -575,7 +575,7 @@ class Assertion {
    * Asserts that the actual value is not an array
    *
    * @example
-   * assert(33).isNotAnArray() // Success
+   * assert(33).isNotAnArray() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is an array
@@ -589,7 +589,7 @@ class Assertion {
   /**
    * Asserts that every value of the array pass the test
    * @example
-   * assert([3, 6]).every(it => it.isAbove(2)) // Success
+   * assert([3, 6]).every(it => it.isAbove(2)) // Passes
    * @param {assertionCallback} test - test for each element
    * @throws {AssertionError}
    * when any value fails the test
@@ -604,7 +604,7 @@ class Assertion {
   /**
    * Asserts that some value of the array pass the test
    * @example
-   * assert([3, 6]).some(it => it.isAbove(5)) // Success
+   * assert([3, 6]).some(it => it.isAbove(5)) // Passes
    * @param {assertionCallback} test - test for each element
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -625,9 +625,42 @@ class Assertion {
   }
 
   /**
+   * Asserts that the actual value includes the expected value using deep equality
+   * @example
+   * assert([{ a: 4 }, { a: 6 }]).includes({ a: 6 }) // Passes
+   * @param {*} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value does not include the expected value
+   * @return {this} chainable method
+   */
+  includes (expected, message = '{name} does not include the given item') {
+    if (!this.actual.some(it => deepEquals(it, expected))) this.fire(message)
+    return this
+  }
+
+  /**
+   * Asserts that the actual value only includes the expected values using deep equality.
+   * It could include duplicates.
+   * @example
+   * assert([1, 2]).includes([2, 1, 3]) // Passes
+   * assert([1, 1]).includes([2, 1, 3]) // Passes
+   * assert([1, 7]).includes([2, 1, 3]) // Fails
+   * @param {Array} expected - expected value
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value does not only include the expected values
+   * @return {this} chainable method
+   */
+  includesOnly (expected, message = '{name} does not include only the given items') {
+    if (!this.actual.some(a => expected.some(b => deepEquals(a, b)))) this.fire(message)
+    return this
+  }
+
+  /**
    * Asserts that the actual value has the given property and run some test on it
    * @example
-   * assert({ a: 3 }).hasProperty('a', it => it.isAbove(2)) // Success
+   * assert({ a: 3 }).hasProperty('a', it => it.isAbove(2)) // Passes
    * @param {string} name - name of the property
    * @param {assertionCallback} test - test for the property
    * @param {string} [message] - error message
@@ -645,7 +678,7 @@ class Assertion {
   /**
    * Asserts that the actual value does not have the given property
    * @example
-   * assert({ a: 3 }).doesNotHaveProperty('b') // Success
+   * assert({ a: 3 }).doesNotHaveProperty('b') // Passes
    * @param {string} name - name of the property
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -660,7 +693,7 @@ class Assertion {
   /**
    * Asserts that the actual value has the own given property and run some test on it
    * @example
-   * assert({ a: 3 }).hasOwnProperty('a', it => it.isAbove(2)) // Success
+   * assert({ a: 3 }).hasOwnProperty('a', it => it.isAbove(2)) // Passes
    * @param {string} name - name of the property
    * @param {assertionCallback} test - test for the property
    * @param {string} [message] - error message
@@ -680,7 +713,7 @@ class Assertion {
   /**
    * Asserts that the actual value does not have the own given property
    * @example
-   * assert({ a: 3 }).doesNotHaveOwnProperty('b') // Success
+   * assert({ a: 3 }).doesNotHaveOwnProperty('b') // Passes
    * @param {string} name - name of the property
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -697,10 +730,10 @@ class Assertion {
   /**
    * Asserts that the property length exists and optionally pass some test against it
    * @example
-   * assert('').hasLength() // Success
+   * assert('').hasLength() // Passes
    * assert(1).hasLength() // Fails
-   * assert([2]).hasLength() // Success
-   * assert([2, 5]).hasLength(it => it.isAbove(1)) // Success
+   * assert([2]).hasLength() // Passes
+   * assert([2, 5]).hasLength(it => it.isAbove(1)) // Passes
    * @param {assertionCallback} [test] - test for the property
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -719,9 +752,9 @@ class Assertion {
   /**
    * Asserts that the property length exists and it is equal to the giving number
    * @example
-   * assert('').hasLengthOf(0) // Success
+   * assert('').hasLengthOf(0) // Passes
    * assert(1).hasLengthOf(1) // Fails
-   * assert([2, 3]).hasLengthOf(2) // Success
+   * assert([2, 3]).hasLengthOf(2) // Passes
    * @param {number} expected - expected length
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -736,7 +769,7 @@ class Assertion {
   /**
    * Asserts that the actual value is above the given number
    * @example
-   * assert(4).isAbove(3) // Success
+   * assert(4).isAbove(3) // Passes
    * assert(4).isAbove(4) // Fails
    * @param {number} number - given number
    * @param {string} [message] - error message
@@ -752,7 +785,7 @@ class Assertion {
   /**
    * Asserts that the actual value is at least the given number
    * @example
-   * assert(4).isAtLeast(4) // Success
+   * assert(4).isAtLeast(4) // Passes
    * assert(4).isAtLeast(5) // Fails
    * @param {number} number - given number
    * @param {string} [message] - error message
@@ -768,7 +801,7 @@ class Assertion {
   /**
    * Asserts that the actual value is below the given number
    * @example
-   * assert(4).isBelow(5) // Success
+   * assert(4).isBelow(5) // Passes
    * assert(4).isBelow(4) // Fails
    * @param {number} number - given number
    * @param {string} [message] - error message
@@ -784,7 +817,7 @@ class Assertion {
   /**
    * Asserts that the actual value is at most the given number
    * @example
-   * assert(4).isAtMost(4) // Success
+   * assert(4).isAtMost(4) // Passes
    * assert(4).isAtMost(3) // Fails
    * @param {number} number - given number
    * @param {string} [message] - error message
@@ -800,8 +833,8 @@ class Assertion {
   /**
    * Asserts that the actual value is a instance of a given class
    * @example
-   * assert(new Cat()).isInstanceOf(Animal) // Success
-   * assert(null).isInstanceOf(Object) // Success
+   * assert(new Cat()).isInstanceOf(Animal) // Passes
+   * assert(null).isInstanceOf(Object) // Passes
    * assert(aCar).isInstanceOf(Plane) // Fail
    * @param {number} expected - expected class
    * @param {string} [message] - error message
@@ -817,7 +850,7 @@ class Assertion {
   /**
    * Asserts that the actual value is frozen
    * @example
-   * assert(Object.freeze({ a: 1 })).isFrozen() // Success
+   * assert(Object.freeze({ a: 1 })).isFrozen() // Passes
    * assert({ a: 1 }).isFrozen() // Fail
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -833,7 +866,7 @@ class Assertion {
    * Asserts that the actual value is not frozen
    * @example
    * assert(Object.freeze({ a: 1 })).isNotFrozen() // Fail
-   * assert({ a: 1 }).isNotFrozen() // Success
+   * assert({ a: 1 }).isNotFrozen() // Passes
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value is frozen
@@ -847,8 +880,8 @@ class Assertion {
   /**
    * Asserts that the promise is fulfilled and the test passes
    * @example
-   * assert(Promise.resolve(3)).isFulfilled() // Success
-   * assert(Promise.resolve(3)).isFulfilled(it => it.isEqualTo(3)) // Success
+   * assert(Promise.resolve(3)).isFulfilled() // Passes
+   * assert(Promise.resolve(3)).isFulfilled(it => it.isEqualTo(3)) // Passes
    * assert(Promise.resolve(3)).isFulfilled(it => it.isEqualTo(5)) // Fail
    * assert(Promise.reject(new Error())).isFulfilled() // Fail
    * @param {assertionCallback} [test] - test for the resolved value
@@ -871,7 +904,7 @@ class Assertion {
    * Asserts that the promise is rejected and the test passes
    * @example
    * assert(Promise.resolve(3)).isRejected() // Fail
-   * assert(Promise.reject(new Error)).isRejected(it => it.isInstanceOf(Error)) // Success
+   * assert(Promise.reject(new Error)).isRejected(it => it.isInstanceOf(Error)) // Passes
    * @param {assertionCallback} [test] - test for the resolved value
    * @param {string} [message] - error message
    * @throws {AssertionError}
@@ -891,8 +924,8 @@ class Assertion {
   /**
    * Asserts that the provided function throws an exception and optionally tests the error
    * @example
-   * assert(() => throw new Error()).throws() // Success
-   * assert(() => throw new Error()).throws(it => it.isInstanceOf(Error)) // Success
+   * assert(() => throw new Error()).throws() // Passes
+   * assert(() => throw new Error()).throws(it => it.isInstanceOf(Error)) // Passes
    * assert(() => 3).throws() // Fails
    * @param {assertionCallback} [test] - test error
    * @param {string} [message] - error message
@@ -916,7 +949,7 @@ class Assertion {
   /**
    * Asserts that the provided function throws the given exception
    * @example
-   * assert(() => throw new NotFoundError()).throwsA(NotFoundError) // Success
+   * assert(() => throw new NotFoundError()).throwsA(NotFoundError) // Passes
    * assert(() => throw new ServerError()).throwsA(NotFoundError) // Fails
    * @param {function} [classRef] - class reference
    * @param {string} [message] - error message
@@ -935,7 +968,7 @@ class Assertion {
    * Asserts that the provided function throws the given exception.
    * Alias of {@link module:xassert.Assertion#throwsA}
    * @example
-   * assert(() => throw new Error()).throwsAn(Error) // Success
+   * assert(() => throw new Error()).throwsAn(Error) // Passes
    * assert(() => throw new Error()).throwsAn(InvalidFormat) // Fails
    * @param {function} [classRef] - class reference
    * @param {string} [message] - error message
@@ -951,7 +984,7 @@ class Assertion {
    * Asserts that the actual value matches the given regular expression.
    * Alias of {@link module:xassert.Assertion#throwsA}
    * @example
-   * assert(() => throw new Error()).throwsAn(Error) // Success
+   * assert(() => throw new Error()).throwsAn(Error) // Passes
    * assert(() => throw new Error()).throwsAn(InvalidFormat) // Fails
    * @param {RegExp} [re] - regular expression
    * @param {string} [message] - error message

@@ -465,11 +465,12 @@ describe('xassert module', function () {
   })
 
   context('Arrays', function () {
-    const array1 = [2, 1, 3, 1]
+    const numberArray = [2, 1, 3, 1]
+    const objectArray = [{ a: 3 }, { b: 'a' }, { a: 8 }]
     describe('isAnArray()', function () {
-      itShouldBeChainable(() => assert(array1).isAnArray())
+      itShouldBeChainable(() => assert(numberArray).isAnArray())
       itShouldNotThrowWhenTheValue('is an array', function () {
-        assert(array1).isAnArray()
+        assert(numberArray).isAnArray()
       })
       itShouldThrowWhen('it is not an array', function () {
         throws(() => assert('banana').isAnArray())
@@ -483,47 +484,65 @@ describe('xassert module', function () {
         assert(null).isNotAnArray()
       })
       itShouldThrowWhen('it is an array', function () {
-        throws(() => assert(array1).isNotAnArray())
+        throws(() => assert(numberArray).isNotAnArray())
       })
     })
     describe('every()', function () {
-      itShouldBeChainable(() => assert(array1).every(it => it.isANumber()))
+      itShouldBeChainable(() => assert(numberArray).every(it => it.isANumber()))
       itShouldNotThrowWhen('every item pass the following assertions', function () {
-        assert(array1).every(it => it.isANumber())
+        assert(numberArray).every(it => it.isANumber())
       })
       itShouldThrowWhen('not every item pass the following assertions', function () {
-        throws(() => assert(array1).every(it => it.isBelow(3)))
+        throws(() => assert(numberArray).every(it => it.isBelow(3)))
       })
     })
     describe('some()', function () {
-      itShouldBeChainable(() => assert(array1).every(it => it.isANumber()))
+      itShouldBeChainable(() => assert(numberArray).every(it => it.isANumber()))
       itShouldNotThrowWhen('some item pass the following assertions', function () {
-        assert(array1).some(it => it.isEqualTo(3))
+        assert(numberArray).some(it => it.isEqualTo(3))
       })
       itShouldThrowWhen('not any item pass the following assertions', function () {
-        throws(() => assert(array1).some(it => it.isEqualTo(8)))
-        throws(() => assert(array1).some(it => it.isEqualTo(8)))
-        assert(() => assert(array1).some(it => it.isAnApple(8))).throwsAn(Error)
+        throws(() => assert(numberArray).some(it => it.isEqualTo(8)))
+        throws(() => assert(numberArray).some(it => it.isEqualTo(8)))
+        assert(() => assert(numberArray).some(it => it.isAnApple(8))).throwsAn(Error)
       })
     })
     describe('hasLength()', function () {
-      itShouldBeChainable(() => assert(array1).hasLength(it => it.isANumber()))
+      itShouldBeChainable(() => assert(numberArray).hasLength(it => it.isANumber()))
       itShouldNotThrowWhen('the length property match the assertion', function () {
-        assert(array1).hasLength()
-        assert(array1).hasLength(it => it.isAbove(array1.length - 1))
+        assert(numberArray).hasLength()
+        assert(numberArray).hasLength(it => it.isAbove(numberArray.length - 1))
       })
       itShouldThrowWhen('the length property does not match the assertion', function () {
         throws(() => assert(3).hasLength())
-        throws(() => assert(array1).hasLength(it => it.isAbove(array1.length + 1)))
+        throws(() => assert(numberArray).hasLength(it => it.isAbove(numberArray.length + 1)))
       })
     })
     describe('hasLengthOf()', function () {
-      itShouldBeChainable(() => assert(array1).hasLengthOf(array1.length))
+      itShouldBeChainable(() => assert(numberArray).hasLengthOf(numberArray.length))
       itShouldNotThrowWhen('the length property match the assertion', function () {
-        assert(array1).hasLengthOf(array1.length)
+        assert(numberArray).hasLengthOf(numberArray.length)
       })
       itShouldThrowWhen('the length property does not match the assertion', function () {
-        throws(() => assert(array1).hasLengthOf(array1.length + 1))
+        throws(() => assert(numberArray).hasLengthOf(numberArray.length + 1))
+      })
+    })
+    describe('includes()', function () {
+      itShouldBeChainable(() => assert(objectArray).includes({ a: 8 }))
+      itShouldNotThrowWhen('the array includes the given item', function () {
+        assert(objectArray).includes({ a: 8 })
+      })
+      itShouldThrowWhen('the array does not include the given item', function () {
+        throws(() => assert(objectArray).includes({ b: 8 }))
+      })
+    })
+    describe('includesOnly()', function () {
+      itShouldBeChainable(() => assert(objectArray).includesOnly(objectArray))
+      itShouldNotThrowWhen('the array includes only the given items', function () {
+        assert(objectArray.concat(objectArray)).includesOnly(objectArray)
+      })
+      itShouldThrowWhen('the array does not include only the given items', function () {
+        throws(() => assert(objectArray).includesOnly([2, 9]))
       })
     })
   })
