@@ -22,7 +22,9 @@ npm install xassert --save-dev
 npm install xassert
 ```
 
-## Simple example
+## Usage
+
+### A simple example
 
 ```js
 const assert = require('xassert')
@@ -30,17 +32,17 @@ const result = 'banana'
 assert(result).isEqualTo('banana')
 ```
 
-## Chaining
+### Chaining
 
 ```js
 const assert = require('xassert')
 
 assert(obj)
-  .hasOwnProperty('a').andIt
-  .hasOwnProperty('b', it => it.isEqualTo('john'))
+  .hasOwnProperty('id', it => it.matches(/[a-z0-9]{9}/)).andIt
+  .hasOwnProperty('name', it => it.isEqualTo('john'))
 ```
 
-## How to extend
+## Extensible
 
 ```js
 // CommonJS
@@ -64,6 +66,7 @@ assert(() => assert(apple).isABanana()).throwsAn(AssertionError)
 ## Reusable assertions
 
 ```js
+    const assert = require('xassert')
     // Reusable assertions on properties
     // Note that `assert.fn` is only a helper function for auto-completion in some IDE
     const isANumber = assert.fn(it => it.isANumber())

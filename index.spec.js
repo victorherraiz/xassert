@@ -607,10 +607,12 @@ describe('xassert module', function () {
     })
   })
   context('Functions', function () {
-    describe('throws()', function () {
-      function testException (fn) {
-        try { fn() } catch (e) {
-          if (!(e instanceof AssertionError)) throw e
+    describe('throws(), throwsA(), throwsAn()', function () {
+      function testException (fn, message) {
+        try { fn() } catch (error) {
+          if (!(error instanceof AssertionError) || message !== error.message) {
+            throw new Error('Exception is wrong: ' + error.message)
+          }
           return
         }
         throw new Error(fn + ' should throw an exception')
@@ -636,11 +638,12 @@ describe('xassert module', function () {
           .throws(it => it.hasProperty('message', it => it.isEqualTo('ok')))
       })
       itShouldThrowWhen('the actual function does not throw any exceptions', function () {
-        testException(() => assert(() => { }).throws())
-        testException(() => assert(() => { throw new Error() }).throwsA(SomeError))
-        testException(() => assert(() => { throw new Error() }).throwsAn(AnotherError))
-        testException(() => assert(() => { throw new Error('ok') })
-          .throws(it => it.hasProperty('message', it => it.isEqualTo('ko'))))
+        testException(() => assert(() => { }).throws(), 'function did not throw')
+        testException(() => assert(() => { throw new Error() }).throwsA(SomeError), 'function error is not a SomeError')
+        testException(() => assert(() => { throw new Error() }).throwsAn(AnotherError), 'function error in not an AnotherError')
+        testException(
+          () => assert(() => { throw new Error('ok') }).throws(it => it.hasProperty('message', it => it.isEqualTo('ko'))),
+          'function error message property is different than expected value')
       })
     })
   })
@@ -651,9 +654,7 @@ describe('xassert module', function () {
         () => { throw new Error('Rejection expected') },
         (error) => {
           assert(error).isInstanceOf(AssertionError)
-          if (message !== undefined) {
-            assert(error).hasProperty('message', it => it.isEqualTo(message))
-          }
+            .hasProperty('message', it => it.isEqualTo(message))
         }
       )
     }
@@ -673,8 +674,9 @@ describe('xassert module', function () {
       })
       itShouldThrowWhen('the promise is rejected or the test fails', function () {
         return Promise.all([
-          testRejection(assert(rejected).isFulfilled()),
-          testRejection(assert(resolved).isFulfilled(it => it.isEqualTo(false)))
+          testRejection(assert(rejected).isFulfilled(), 'promise has been rejected'),
+          testRejection(assert(resolved).isFulfilled(it => it.isEqualTo(false)),
+            'promise resolved actual value is different than expected value')
         ])
       })
     })

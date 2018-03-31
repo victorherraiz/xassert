@@ -893,7 +893,7 @@ class Assertion {
   isFulfilled (test, message = '{name} has been rejected') {
     return this.actual.then(
       value => {
-        if (typeof test === 'function') test(new Assertion(value))
+        if (typeof test === 'function') test(new Assertion(value, 'resolved actual value', this))
         return value
       },
       ex => this.fire(message)
@@ -957,7 +957,7 @@ class Assertion {
    * when the provided function does not throw the given exception
    * @return {this} chainable method
    */
-  throwsA (classRef, message = '{name} did not throw a {class}') {
+  throwsA (classRef, message = '{name} is not a {class}') {
     return this.throws(it => it.isInstanceOf(
       classRef,
       processMessage(message, { class: classRef.name })
@@ -976,7 +976,7 @@ class Assertion {
    * when the provided function does not throw the given exception
    * @return {this} chainable method
    */
-  throwsAn (classRef, message = '{name} did not throw an {class}') {
+  throwsAn (classRef, message = '{name} in not an {class}') {
     return this.throwsA(classRef, message)
   }
 

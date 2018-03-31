@@ -11,7 +11,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "prepublishOnly": "npm test",
+    "prepublishOnly": "rm -rf docs && npm test",
     "report:html": "nyc --reporter=html report",
     "test:unit": "mocha index.spec.js",
     "test:examples": "mocha examples/mocha.spec.js",
