@@ -278,7 +278,7 @@ describe('xassert module', function () {
         throws(() => assert(object).isDeeplyEqualTo(null))
         throws(() => assert(null).isDeeplyEqualTo(object))
         throws(() => assert(4).isDeeplyEqualTo(3))
-        throws(() => assert(undefined).isDeeplyEqualTo(null))
+        throws(() => assert(undefined).isDeeplyEqualTo(null), 'actual value is not deeply equal to expected value')
         throws(() => assert(undefined).isDeeplyEqualTo(0))
         throws(() => assert([]).isDeeplyEqualTo({}))
         throws(() => assert([]).isDeeplyEqualTo(undefined))
@@ -462,6 +462,50 @@ describe('xassert module', function () {
         throws(() => assert(string1).hasLengthOf(string1.length + 1))
       })
     })
+    describe('matches()', function () {
+      itShouldBeChainable(() => assert('abc').matches(/^abc$/))
+      itShouldNotThrowWhenTheValue('matches the given regular expression', function () {
+        assert('abc').matches(/^abc$/)
+        assert(1).matches(/^1$/)
+      })
+      itShouldThrowWhenTheValue('does not match the given regular expression', function () {
+        throws(() => assert('abce').matches(/^abc$/),
+          'actual value does not match the given regular expression: /^abc$/')
+        throws(() => assert(null).matches(/^abc$/),
+          'actual value does not match the given regular expression: /^abc$/'
+        )
+      })
+    })
+    describe('contains()', function () {
+      itShouldBeChainable(() => assert('abc').contains('bc'))
+      itShouldNotThrowWhenTheValue('contains the given string', function () {
+        assert('abc').contains('bc')
+      })
+      itShouldThrowWhenTheValue('does not contain the given string', function () {
+        throws(() => assert('abc').contains('bca'),
+          'actual value does not contain the given string')
+      })
+    })
+    describe('startsWith()', function () {
+      itShouldBeChainable(() => assert('abc').startsWith('ab'))
+      itShouldNotThrowWhenTheValue('starts with the given string', function () {
+        assert('abc').startsWith('ab')
+      })
+      itShouldThrowWhenTheValue('does not start with the given string', function () {
+        throws(() => assert('abc').startsWith('bc'),
+          'actual value does not start with the given string')
+      })
+    })
+    describe('endsWith()', function () {
+      itShouldBeChainable(() => assert('abc').endsWith('bc'))
+      itShouldNotThrowWhenTheValue('ends with the given string', function () {
+        assert('abc').endsWith('bc')
+      })
+      itShouldThrowWhenTheValue('does not end with the given string', function () {
+        throws(() => assert('abc').endsWith('ab'),
+          'actual value does not end with the given string')
+      })
+    })
   })
 
   context('Arrays', function () {
@@ -554,7 +598,7 @@ describe('xassert module', function () {
       assert(value).satisfies(value => value === 'banana')
     })
     itShouldThrowWhenTheValue('does not satisfy the following function (i.e. it returns false)', function () {
-      throws(() => assert(value).satisfies(value => value === 'lemon'))
+      throws(() => assert(value).satisfies(value => value === 'lemon'), 'actual value does not satisfy the given test')
       assert(() => assert(value).satisfies()).throwsAn(Error)
     })
   })
@@ -568,7 +612,7 @@ describe('xassert module', function () {
         assert(frozen).isFrozen()
       })
       itShouldThrowWhenTheValue('is not frozen', function () {
-        throws(() => assert(notFrozen).isFrozen())
+        throws(() => assert(notFrozen).isFrozen(), 'actual value is not frozen')
       })
     })
     describe('isNotFrozen()', function () {
@@ -577,7 +621,7 @@ describe('xassert module', function () {
         assert(notFrozen).isNotFrozen()
       })
       itShouldThrowWhenTheValue('is frozen', function () {
-        throws(() => assert(frozen).isNotFrozen())
+        throws(() => assert(frozen).isNotFrozen(), 'actual value is frozen')
       })
     })
   })
@@ -589,7 +633,7 @@ describe('xassert module', function () {
       assert(object).isInstanceOf(Object)
     })
     itShouldNotThrowWhen('it is not instance of a given class', function () {
-      throws(() => assert(object).isInstanceOf(Array))
+      throws(() => assert(object).isInstanceOf(Array), 'actual value is not instance of class Array')
     })
   })
 
@@ -704,21 +748,7 @@ describe('xassert module', function () {
       const things = { colors: [{ name: 'red', value: '#FF0000' }, { name: 'red', value: '#0000FF' }, { name: 'green', value: '00FF00' }] }
       throws(
         () => assert(things).hasOwnProperty('colors', it => it.every(it => it.hasProperty('value', it => it.matches(/^#[0-9a-f]{6}$/i)))),
-        'actual value colors own property at index 2 value property did not match the given regular expression: /^#[0-9a-f]{6}$/i'
-      )
-    })
-  })
-  describe('matches()', function () {
-    itShouldBeChainable(() => assert('abc').matches(/^abc$/))
-    itShouldNotThrowWhenTheValue('matches the given regular expression', function () {
-      assert('abc').matches(/^abc$/)
-      assert(1).matches(/^1$/)
-    })
-    itShouldThrowWhenTheValue('does not match the given regular expression', function () {
-      throws(() => assert('abce').matches(/^abc$/))
-      throws(
-        () => assert(null).matches(/^abc$/),
-        'actual value did not match the given regular expression: /^abc$/'
+        'actual value colors own property at index 2 value property does not match the given regular expression: /^#[0-9a-f]{6}$/i'
       )
     })
   })

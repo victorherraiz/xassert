@@ -982,7 +982,6 @@ class Assertion {
 
   /**
    * Asserts that the actual value matches the given regular expression.
-   * Alias of {@link module:xassert.Assertion#throwsA}
    * @example
    * assert(() => throw new Error()).throwsAn(Error) // Passes
    * assert(() => throw new Error()).throwsAn(InvalidFormat) // Fails
@@ -992,15 +991,62 @@ class Assertion {
    * when the actual value does not match the given regular expression
    * @return {this} chainable method
    */
-  matches (re, message = '{name} did not match the given regular expression: {regexp}') {
+  matches (re, message = '{name} does not match the given regular expression: {regexp}') {
     if (!re.test(this.actual)) this.fire(processMessage(message, { regexp: re }))
     return this
   }
 
-  satisfies (test) {
+  /**
+   * Asserts that the actual value contains the given string.
+   * @example
+   * assert('abcd').contains('bc') // Passes
+   * assert('abcd').contains('ac') // Fails
+   * @param {string} str - given string
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value does not contain the given string
+   * @return {this} chainable method
+   */
+  contains (str, message = '{name} does not contain the given string') {
+    if (this.actual.indexOf(str) === -1) this.fire(message)
+    return this
+  }
+
+  /**
+   * Asserts that the actual value starts with the given string.
+   * @example
+   * assert('abcd').startsWith('ab') // Passes
+   * assert('abcd').startsWith('bc') // Fails
+   * @param {string} str - given string
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value does not start with the given string
+   * @return {this} chainable method
+   */
+  startsWith (str, message = '{name} does not start with the given string') {
+    if (!this.actual.startsWith(str)) this.fire(message)
+    return this
+  }
+
+  /**
+   * Asserts that the actual value ends with the given string.
+   * @example
+   * assert('abcd').endsWith('cd') // Passes
+   * assert('abcd').endsWith('bc') // Fails
+   * @param {string} str - given string
+   * @param {string} [message] - error message
+   * @throws {AssertionError}
+   * when the actual value does not end with the given string
+   * @return {this} chainable method
+   */
+  endsWith (str, message = '{name} does not end with the given string') {
+    if (!this.actual.endsWith(str)) this.fire(message)
+    return this
+  }
+
+  satisfies (test, message = '{name} does not satisfy the given test') {
     requireTestFunction(test, 'satisfies requires a test function')
-    const result = test(this.actual)
-    if (!result) this.fire('It does not satisfy')
+    if (!test(this.actual)) this.fire(message)
     return this
   }
 }

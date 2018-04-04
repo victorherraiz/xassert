@@ -11,14 +11,16 @@
   ],
   "main": "index.js",
   "scripts": {
-    "prepublishOnly": "rm -rf docs && npm test",
+    "prepublishOnly": "npm run docs:clean && npm test",
     "report:html": "nyc --reporter=html report",
     "test:unit": "mocha index.spec.js",
+    "test:coverage": "nyc npm run test:unit",
     "test:examples": "mocha examples/mocha.spec.js",
-    "test": "npm run lint && npm run test:examples && nyc npm run test:unit",
+    "test": "npm run lint && npm run test:examples && npm run test:coverage",
     "lint": "standard *.js examples/*.js",
     "lint:fix": "npm run lint -- --fix --verbose",
-    "docs": "rm -rf ./docs && jsdoc -c ./jsdoc.json"
+    "docs:clean": "rm -rf ./docs",
+    "docs": "npm run docs:clean && jsdoc -c ./jsdoc.json"
   },
   "repository": {
     "type": "git",
