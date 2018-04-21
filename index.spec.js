@@ -589,6 +589,15 @@ describe('xassert module', function () {
         throws(() => assert(objectArray).includesOnly([2, 9]))
       })
     })
+    describe('item()', function () {
+      itShouldBeChainable(() => assert(numberArray).item(1, it => it.is(numberArray[1])))
+      itShouldNotThrowWhen('the test on the item passes', function () {
+        assert(numberArray).item(1, it => it.is(numberArray[1]))
+      })
+      itShouldThrowWhen('the array does not include only the given items', function () {
+        throws(() => assert(numberArray).item(1, it => it.is('-2')))
+      })
+    })
   })
 
   describe('satisfies()', function () {

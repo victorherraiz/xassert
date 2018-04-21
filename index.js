@@ -658,6 +658,21 @@ class Assertion {
   }
 
   /**
+   * Asserts that the actual value at a given index pass a tests
+   * @example
+   * assert([3, 6]).every(it => it.isAbove(2)) // Passes
+   * @param {number} index - index to be tested
+   * @param {assertionCallback} test - test
+   * @throws {AssertionError}
+   * when any value at a given index fails the test
+   * @return {this} chainable method
+   */
+  item (index, test) {
+    test(new Assertion(this.actual[index], 'at index ' + index, this))
+    return this
+  }
+
+  /**
    * Asserts that the actual value has the given property and run some test on it
    * @example
    * assert({ a: 3 }).hasProperty('a', it => it.isAbove(2)) // Passes

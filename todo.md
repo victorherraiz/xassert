@@ -19,3 +19,11 @@
 * Is satisfies function necessary?
 * Every should have a message and capture the exception?
 * document fire as protected or public and add example in readme
+
+## Version 2
+
+```js
+const obj = { a: { a: 2 }, b: { a: 'a' }, c: 'c' }
+const isANumber = assert.fn(it => it.isANumber())
+const isAnAProperty = assert.fn(it => a.isObject().hasProperty('a', isANumber))
+assert(obj).isObject().hasProperty('a',isAnAProperty)
