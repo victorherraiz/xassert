@@ -26,7 +26,7 @@ function deepEquals (a, b) {
 
   const names = Object.getOwnPropertyNames(a)
   if (names.length !== Object.getOwnPropertyNames(b).length) return false
-  return names.every((n) => b.hasOwnProperty(n) && deepEquals(a[n], b[n]))
+  return names.every((n) => Object.prototype.hasOwnProperty.call(b, n) && deepEquals(a[n], b[n]))
 }
 
 const messageField = /{([\s\S]+?)}/g
@@ -252,6 +252,7 @@ class Assertion {
   is (expected, message = '{name} is not expected value') {
     return this.isDeeplyEqualTo(expected, message)
   }
+
   /**
    * Asserts that the actual value is not deeply equal to expected value
    *
@@ -675,7 +676,7 @@ class Assertion {
   /**
    * Asserts that the actual value has the given property and run some test on it
    * @example
-   * assert({ a: 3 }).hasProperty('a', it => it.isAbove(2)) // Passes
+   * assert({ a: 3 }).includesProperty('a', it => it.isAbove(2)) // Passes
    * @param {string} name - name of the property
    * @param {assertionCallback} test - test for the property
    * @param {string} [message] - error message
@@ -684,7 +685,7 @@ class Assertion {
    * the given property or the tests fails
    * @return {this} chainable method
    */
-  hasProperty (name, test, message = '{name} does not contain the property {property}') {
+  includesProperty (name, test, message = '{name} does not contain the property {property}') {
     if (!(this.actual && name in this.actual)) this.fire(processMessage(message, { property: name }))
     if (typeof test === 'function') test(new Assertion(this.actual[name], name + ' property', this))
     return this
@@ -693,14 +694,14 @@ class Assertion {
   /**
    * Asserts that the actual value does not have the given property
    * @example
-   * assert({ a: 3 }).doesNotHaveProperty('b') // Passes
+   * assert({ a: 3 }).doesNotIncludeProperty('b') // Passes
    * @param {string} name - name of the property
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value has the given property
    * @return {this} chainable method
    */
-  doesNotHaveProperty (name, message = '{name} contains the property {property}') {
+  doesNotIncludeProperty (name, message = '{name} contains the property {property}') {
     if (this.actual && name in this.actual) this.fire(processMessage(message, { property: name }))
     return this
   }
@@ -708,7 +709,7 @@ class Assertion {
   /**
    * Asserts that the actual value has the own given property and run some test on it
    * @example
-   * assert({ a: 3 }).hasOwnProperty('a', it => it.isAbove(2)) // Passes
+   * assert({ a: 3 }).includesOwnProperty('a', it => it.isAbove(2)) // Passes
    * @param {string} name - name of the property
    * @param {assertionCallback} test - test for the property
    * @param {string} [message] - error message
@@ -717,8 +718,8 @@ class Assertion {
    * the own given property or the tests fails
    * @return {this} chainable method
    */
-  hasOwnProperty (name, test, message = '{name} does not contain the own property {property}') {
-    if (!(this.actual instanceof Object && this.actual.hasOwnProperty(name))) {
+  includesOwnProperty (name, test, message = '{name} does not include the own property {property}') {
+    if (!(this.actual instanceof Object && Object.prototype.hasOwnProperty.call(this.actual, name))) {
       this.fire(processMessage(message, { property: name }))
     }
     if (typeof test === 'function') test(new Assertion(this.actual[name], name + ' own property', this))
@@ -728,15 +729,15 @@ class Assertion {
   /**
    * Asserts that the actual value does not have the own given property
    * @example
-   * assert({ a: 3 }).doesNotHaveOwnProperty('b') // Passes
+   * assert({ a: 3 }).doesNotIncludeOwnProperty('b') // Passes
    * @param {string} name - name of the property
    * @param {string} [message] - error message
    * @throws {AssertionError}
    * when the actual value has the own given property
    * @return {this} chainable method
    */
-  doesNotHaveOwnProperty (name, message = '{name} contains the own property {property}') {
-    if (this.actual instanceof Object && this.actual.hasOwnProperty(name)) {
+  doesNotIncludeOwnProperty (name, message = '{name} contains the own property {property}') {
+    if (this.actual instanceof Object && Object.prototype.hasOwnProperty.call(this.actual, name)) {
       this.fire(processMessage(message, { property: name }))
     }
     return this
@@ -1107,8 +1108,8 @@ assert.fail = function fail (message) {
  * const object = { a:'BANANA', b:'APPLE' }
  * isABanana(assert('BANANA'))
  * assert(object)
- *   .hasProperty('a', isABanana) // Passes
- *   .hasProperty('b', isABanana) // Fails
+ *   .includesProperty('a', isABanana) // Passes
+ *   .includesProperty('b', isABanana) // Fails
  */
 assert.fn = function callback (test) {
   requireTestFunction(test)

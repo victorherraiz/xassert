@@ -2,12 +2,13 @@
 'use strict'
 
 const assert = require('.')
+const assertThat = assert
 const { AssertionError, Assertion } = assert
 
 function throws (fn, message) {
   assert(fn).throws(it => {
     it.isInstanceOf(AssertionError)
-    if (message !== undefined) it.hasProperty('message', it => it.isEqualTo(message))
+    if (message !== undefined) it.includesProperty('message', it => it.isEqualTo(message))
   })
 }
 
@@ -52,7 +53,7 @@ describe('xassert module', function () {
       const value = 4
       const assertion = assert(value)
       assert(assertion.getRef()).isEqualTo(value)
-      assert(assertion).hasProperty('ref', it => it.isEqualTo(value))
+      assert(assertion).includesProperty('ref', it => it.isEqualTo(value))
     })
   })
 
@@ -334,47 +335,47 @@ describe('xassert module', function () {
 
   context('properties', function () {
     const object = { a: 1, b: 'text', c: null }
-    describe('hasProperty()', function () {
-      itShouldBeChainable(() => assert(object).hasProperty('a'))
+    describe('includesProperty()', function () {
+      itShouldBeChainable(() => assert(object).includesProperty('a'))
       itShouldNotThrowWhen('the property exists', function () {
-        assert(object).hasProperty('a')
-        assert(object).hasProperty('a', it => it.isEqualTo(1))
+        assert(object).includesProperty('a')
+        assert(object).includesProperty('a', it => it.isEqualTo(1))
       })
       itShouldThrowWhen('the property does not exist', function () {
-        throws(() => assert(object).hasProperty('x'))
-        throws(() => assert(object).hasProperty('a', it => it.isEqualTo(2)))
+        throws(() => assert(object).includesProperty('x'))
+        throws(() => assert(object).includesProperty('a', it => it.isEqualTo(2)))
       })
     })
 
-    describe('doesNotHaveProperty()', function () {
-      itShouldBeChainable(() => assert(object).doesNotHaveProperty('z'))
+    describe('doesNotIncludeProperty()', function () {
+      itShouldBeChainable(() => assert(object).doesNotIncludeProperty('z'))
       itShouldNotThrowWhen('the property does not exists', function () {
-        assert(object).doesNotHaveProperty('z')
+        assert(object).doesNotIncludeProperty('z')
       })
       itShouldThrowWhen('the property exists', function () {
-        throws(() => assert(object).doesNotHaveProperty('a'))
+        throws(() => assert(object).doesNotIncludeProperty('a'))
       })
     })
 
-    describe('hasOwnProperty()', function () {
-      itShouldBeChainable(() => assert(object).hasOwnProperty('a'))
+    describe('includesOwnProperty()', function () {
+      itShouldBeChainable(() => assert(object).includesOwnProperty('a'))
       itShouldNotThrowWhen('the own property exists', function () {
-        assert(object).hasOwnProperty('a')
-        assert(object).hasOwnProperty('a', value => value.isEqualTo(1))
+        assert(object).includesOwnProperty('a')
+        assert(object).includesOwnProperty('a', value => value.isEqualTo(1))
       })
       itShouldThrowWhen('the own property does not exists', function () {
-        throws(() => assert(object).hasOwnProperty('x'))
-        throws(() => assert(object).hasOwnProperty('a', value => value.isEqualTo(2)))
+        throws(() => assert(object).includesOwnProperty('x'))
+        throws(() => assert(object).includesOwnProperty('a', value => value.isEqualTo(2)))
       })
     })
 
-    describe('doesNotHaveOwnProperty()', function () {
-      itShouldBeChainable(() => assert(object).doesNotHaveOwnProperty('z'))
+    describe('doesNotIncludeOwnProperty()', function () {
+      itShouldBeChainable(() => assert(object).doesNotIncludeOwnProperty('z'))
       itShouldNotThrowWhen('the own property does not exists', function () {
-        assert(object).doesNotHaveOwnProperty('z')
+        assert(object).doesNotIncludeOwnProperty('z')
       })
       itShouldThrowWhen('the own property exists', function () {
-        throws(() => assert(object).doesNotHaveOwnProperty('a'))
+        throws(() => assert(object).doesNotIncludeOwnProperty('a'))
       })
     })
   })
@@ -688,14 +689,14 @@ describe('xassert module', function () {
         assert(() => { throw new SomeError() }).throwsA(SomeError)
         assert(() => { throw new AnotherError() }).throwsAn(AnotherError)
         assert(() => { throw new Error('ok') })
-          .throws(it => it.hasProperty('message', it => it.isEqualTo('ok')))
+          .throws(it => it.includesProperty('message', it => it.isEqualTo('ok')))
       })
       itShouldThrowWhen('the actual function does not throw any exceptions', function () {
         testException(() => assert(() => { }).throws(), 'function did not throw')
         testException(() => assert(() => { throw new Error() }).throwsA(SomeError), 'function error is not a SomeError')
         testException(() => assert(() => { throw new Error() }).throwsAn(AnotherError), 'function error in not an AnotherError')
         testException(
-          () => assert(() => { throw new Error('ok') }).throws(it => it.hasProperty('message', it => it.isEqualTo('ko'))),
+          () => assert(() => { throw new Error('ok') }).throws(it => it.includesProperty('message', it => it.isEqualTo('ko'))),
           'function error message property is different than expected value')
       })
     })
@@ -707,7 +708,7 @@ describe('xassert module', function () {
         () => { throw new Error('Rejection expected') },
         (error) => {
           assert(error).isInstanceOf(AssertionError)
-            .hasProperty('message', it => it.isEqualTo(message))
+            .includesProperty('message', it => it.isEqualTo(message))
         }
       )
     }
@@ -738,7 +739,7 @@ describe('xassert module', function () {
         return Promise.all([
           assert(rejected).isRejected(),
           assert(rejected).isRejected((error) => {
-            error.hasProperty('message', it => it.isEqualTo('A terrible error'))
+            error.includesProperty('message', it => it.isEqualTo('A terrible error'))
           })
         ])
       })
@@ -746,7 +747,7 @@ describe('xassert module', function () {
         return Promise.all([
           testRejection(assert(resolved).isRejected(), 'promise has been fulfilled'),
           testRejection(assert(rejected).isRejected(
-            error => error.hasProperty('message', it => it.isEqualTo('A terrible mistake'))
+            error => error.includesProperty('message', it => it.isEqualTo('A terrible mistake'))
           ), 'error message property is different than expected value')
         ])
       })
@@ -756,7 +757,7 @@ describe('xassert module', function () {
     it('should provide composed messages', function () {
       const things = { colors: [{ name: 'red', value: '#FF0000' }, { name: 'red', value: '#0000FF' }, { name: 'green', value: '00FF00' }] }
       throws(
-        () => assert(things).hasOwnProperty('colors', it => it.every(it => it.hasProperty('value', it => it.matches(/^#[0-9a-f]{6}$/i)))),
+        () => assert(things).includesOwnProperty('colors', it => it.every(it => it.includesProperty('value', it => it.matches(/^#[0-9a-f]{6}$/i)))),
         'actual value colors own property at index 2 value property does not match the given regular expression: /^#[0-9a-f]{6}$/i'
       )
     })
@@ -772,11 +773,21 @@ describe('xassert module', function () {
       // same as "const isABanana = it => it.isEqualTo('BANANA', '{name} is not a banana')"
       const object = { a: 'BANANA', b: 'APPLE' }
       isABanana(assert('BANANA'))
-      assert(object).hasProperty('a', isABanana)
+      assert(object).includesProperty('a', isABanana)
       throws(
-        () => assert(object).hasProperty('b', isABanana),
+        () => assert(object).includesProperty('b', isABanana),
         'actual value b property is not a banana'
       )
+    })
+  })
+  describe('PoC', function () {
+    context('is high-order func', function () {
+      const is = (expected, message) => it => it.is(expected, message)
+      it('should assert deep equality for properties', function () {
+        assertThat({ a: 23, b: 55 })
+          .includesProperty('a', is(23))
+          .includesProperty('b', it => it.isBelow(100))
+      })
     })
   })
 })

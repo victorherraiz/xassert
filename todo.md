@@ -27,3 +27,4 @@ const obj = { a: { a: 2 }, b: { a: 'a' }, c: 'c' }
 const isANumber = assert.fn(it => it.isANumber())
 const isAnAProperty = assert.fn(it => a.isObject().hasProperty('a', isANumber))
 assert(obj).isObject().hasProperty('a',isAnAProperty)
+```

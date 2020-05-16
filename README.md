@@ -38,8 +38,8 @@ assert(result).isEqualTo('banana')
 const assert = require('xassert')
 
 assert(obj)
-  .hasOwnProperty('id', it => it.matches(/[a-z0-9]{9}/)).andIt
-  .hasOwnProperty('name', it => it.isEqualTo('john'))
+  .includesOwnProperty('id', it => it.matches(/[a-z0-9]{9}/)).andIt
+  .includesOwnProperty('name', it => it.isEqualTo('john'))
 ```
 
 ## Extensible
@@ -78,13 +78,13 @@ assert(() => assert(apple).isABanana()).throwsAn(AssertionError)
     const things = { colors: ['red', 'blue', 'yellow'], numbers: [1, 2] }
     assert(things)
       .named('things')
-      .hasOwnProperty('numbers', areNumbers)
-      .hasOwnProperty('colors', areStrings)
+      .includesOwnProperty('numbers', areNumbers)
+      .includesOwnProperty('colors', areStrings)
 
     // Even the whole assertion
     const areThings = assert.fn(it => it.named('things')
-      .hasOwnProperty('numbers', areNumbers)
-      .hasOwnProperty('colors', areStrings))
+      .includesOwnProperty('numbers', areNumbers)
+      .includesOwnProperty('colors', areStrings))
 
     areThings(assert(things))
 ````
